@@ -23,8 +23,8 @@
 import { onUnmounted, ref, watchEffect } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
-import bananImage from '@/assets/images/banana.png';
 import { useYandexSDK } from './composable/useYandexSDK';
+import bananImage from '@/assets/images/banana.png';
 
 const storeUser = useUserStore();
 const { initPlayer } = useYandexSDK();

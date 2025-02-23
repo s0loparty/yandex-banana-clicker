@@ -18,8 +18,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import smallBanana from '@/assets/images/small-banana.png';
 import { useUserStore } from '@/stores/useUserStore';
+import smallBanana from '@/assets/images/small-banana.png';
 
 interface Props {
 	prosition: {
