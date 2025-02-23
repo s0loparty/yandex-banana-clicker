@@ -1,5 +1,5 @@
 <template>
-	<footer class="w-full bg-slate-700">
+	<footer class="w-full bg-slate-700 rounded-t-md">
 		<div class="px-4 py-4 flex items-center justify-between gap-2">
 			<RouterLink
 				to="/"
@@ -14,12 +14,6 @@
 				<CirclePing v-if="storeUser.canBuyBoost" />
 				🔥 БУСТЫ
 			</RouterLink>
-			<!-- <RouterLink
-				to="#"
-				class="rounded block text-gray-300 bg-slate-600 px-3 py-1 shadow-md border border-transparent"
-			>
-				🙈
-			</RouterLink> -->
 			<ButtonSoundEffects />
 		</div>
 	</footer>

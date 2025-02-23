@@ -1,5 +1,5 @@
 <template>
-	<main class="mx-auto">
+	<main class="mx-auto max-w-[800px]">
 		<div class="min-h-screen max-h-screen flex flex-col items-center justify-between">
 			<TheHeader />
 
@@ -16,3 +16,4 @@
 import TheFooter from '@/components/TheFooter.vue';
 import TheHeader from '@/components/TheHeader.vue';
 </script>
+
