@@ -78,13 +78,14 @@ export const useUserStore = defineStore('userStore', () => {
 		}
 
 		// BOOSTS
-		console.log(await player.getData());
-
 		const playerGameData = await player.getData(['boosts']);
 		if (playerGameData?.boosts) {
 			user.boosts = playerGameData.boosts;
 			console.log('playerGameData boosts', playerGameData.boosts);
 		}
+
+		// IS READY FOR GAME
+		ya.ysdk.value?.features.LoadingAPI.ready();
 	};
 
 	/**

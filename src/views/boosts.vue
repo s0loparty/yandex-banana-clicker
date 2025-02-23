@@ -48,6 +48,7 @@ import { useUserStore } from '@/stores/useUserStore';
 import { computed, onMounted, onUnmounted } from 'vue';
 import usePayBoost from '@/composable/usePayBoost';
 import useConfetti from '@/composable/useConfetti';
+import useAdvStore from '@/stores/useAdvStore';
 import CirclePing from '@/components/ui/CirclePing.vue';
 import { BOOSTS } from '@/constants';
 
@@ -55,6 +56,9 @@ const storeUser = useUserStore();
 
 const { handlePay } = usePayBoost();
 const { bananasEffect } = useConfetti();
+
+const { showFullscreenAdv } = useAdvStore();
+setTimeout(showFullscreenAdv, 1000);
 
 const bananas = computed(() => storeUser.user.bananas);
 
@@ -68,9 +72,6 @@ const toggleBodyClasses = (): void => {
 	document.body.classList.toggle('bg-blue-400/30');
 };
 
-onMounted(() => {
-	toggleBodyClasses();
-});
+onMounted(toggleBodyClasses);
 onUnmounted(toggleBodyClasses);
 </script>
-
