@@ -6,8 +6,9 @@
 			mode="in-out"
 		>
 			<img
-				:src="imageBanana"
 				alt="banana"
+				id="banana"
+				:src="imageBanana"
 				:class="bananaImageClasses"
 				@click="handleClick"
 			/>
@@ -28,7 +29,10 @@ const soundEffects = useSoundEffects();
 
 const scaleClasses = ref('');
 const bananaImageClasses = computed(() => {
-	return ['mx-auto w-[80%] max-w-[500px] duration-[100ms]', scaleClasses.value];
+	return [
+		'mx-auto w-[80%] max-w-[500px] duration-[100ms] landscape:max-w-[300px]',
+		scaleClasses.value,
+	];
 });
 
 const effectPosition = reactive({ x: 0, y: 0 });
