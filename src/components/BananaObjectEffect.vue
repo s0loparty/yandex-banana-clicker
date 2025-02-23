@@ -6,7 +6,7 @@
 		class="banana-object"
 		ref="objectsRef"
 	>
-		<span class="text-sm text-white drop-shadow-lg relative top-[14px] left-[10px]">
+		<span class="text-sm text-[#674418] drop-shadow-lg relative top-[14px] left-[10px]">
 			+{{ storeUser.user.priceOneClick }}
 		</span>
 		<img
@@ -40,8 +40,8 @@ const stylePositionProperties = (x: number, y: number) => {
 	const offsetX = 0;
 
 	// Случайное смещение от -5 до 5 по обеим осям
-	const randomOffsetX = Math.floor(Math.random() * 11) - 5; // [-5, 5]
-	const randomOffsetY = Math.floor(Math.random() * 11) - 5; // [-5, 5]
+	const randomOffsetX = Math.floor(Math.random() * 11) - 50; // [-5, 5]
+	const randomOffsetY = Math.floor(Math.random() * 11) - 50; // [-5, 5]
 
 	return {
 		top: `${y + offsetY + randomOffsetY}px`,

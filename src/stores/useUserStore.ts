@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { BOOSTS } from '@/constants';
 import { useYandexSDK } from '@/composable/useYandexSDK';
 
@@ -14,7 +14,8 @@ export const useUserStore = defineStore('userStore', () => {
 
 	const soundEffects = ref(true);
 
-	const { playerSetStats, playerSetData } = useYandexSDK();
+	const { playerSetStats, playerSetData, playerGetStats, playerGetData } =
+		useYandexSDK();
 
 	// куплен ли буст
 	const isBoostPayed = (boost: IBoostStore): boolean => {
@@ -53,6 +54,14 @@ export const useUserStore = defineStore('userStore', () => {
 
 	watch(user, saveUserData, { deep: true });
 
+	onMounted(async () => {
+		const savedBananas = await playerGetStats(['bananas']);
+		console.log('savedBananas', savedBananas);
+
+		const savedBoosts = await playerGetData(['boosts']);
+		console.log('savedBoosts', savedBoosts);
+	});
+
 	return {
 		user,
 		soundEffects,
@@ -64,4 +73,3 @@ export const useUserStore = defineStore('userStore', () => {
 		saveUserData,
 	};
 });
-
