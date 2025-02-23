@@ -1,5 +1,3 @@
-export const PLATFORMS_LOCKED = ['weba', 'webk', 'unknown'];
-
 export const BOOSTS: IBoostStore[] = [
 	{
 		price: 100,
@@ -96,7 +94,7 @@ export const BOOSTS: IBoostStore[] = [
 		icon: '🦾',
 		bananas: 35,
 		color: '#ff6f9b',
-		description: 'Ты как Вин Дизель — бананы твоя семья',
+		description: 'Дуэйн (Банан) Джонсон - нерушимая скала из бананов',
 	},
 	{
 		price: 50000,
@@ -108,10 +106,12 @@ export const BOOSTS: IBoostStore[] = [
 	},
 	{
 		price: 10000000,
-		label: 'Натуральный банан',
-		icon: '💲',
+		label: 'Банановый Дзен',
+		icon: '💫',
 		bananas: 99,
 		color: '#56a8ff',
-		description: '500 рублей на вашу карту, удобным для вас способом',
+		description:
+			'Постиг Банановый Дзен и стал лучим из лучших, среди всех улетных улётов, ты — лучший!',
 	},
 ];
+

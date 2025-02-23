@@ -1,12 +1,9 @@
 interface IUserStore {
 	id: number;
-	firstName: string;
-	lastName?: string;
 	username?: string;
 	priceOneClick: number;
 	boosts: IBoostStore[];
 	bananas: number;
-	platforms: string[];
 }
 
 interface IBoostStore {
@@ -17,3 +14,4 @@ interface IBoostStore {
 	color: string;
 	description: string;
 }
+

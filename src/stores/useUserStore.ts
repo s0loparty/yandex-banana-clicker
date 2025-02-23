@@ -1,26 +1,20 @@
 import { defineStore } from 'pinia';
-import { computed, reactive, ref, watch, watchEffect } from 'vue';
-import { ref as dbRef, set } from 'firebase/database';
-import { database } from '@/firebase';
+import { computed, reactive, ref, watch } from 'vue';
 import { BOOSTS } from '@/constants';
-import { useWebApp } from 'vue-tg';
+import { useYandexSDK } from '@/composable/useYandexSDK';
 
 export const useUserStore = defineStore('userStore', () => {
 	const user = reactive<IUserStore>({
 		id: 0,
-		firstName: '',
-		lastName: '',
 		username: '',
 		boosts: [],
 		priceOneClick: 1,
 		bananas: 0,
-		platforms: [],
 	});
 
-	const firebaseUid = ref('');
 	const soundEffects = ref(true);
 
-	const webApp = useWebApp();
+	const { playerSetStats, playerSetData } = useYandexSDK();
 
 	// куплен ли буст
 	const isBoostPayed = (boost: IBoostStore): boolean => {
@@ -50,26 +44,17 @@ export const useUserStore = defineStore('userStore', () => {
 	};
 
 	async function saveUserData(): Promise<void> {
-		const userRef = dbRef(database, 'users/' + user.id);
-		set(userRef, user);
+		playerSetStats({ bananas: user.bananas });
 	}
 
 	async function saveBoost(): Promise<void> {
-		const userBoostsRef = dbRef(database, `users/${user.id}/boosts`);
-		set(userBoostsRef, user.boosts);
+		playerSetData({ boosts: user.boosts });
 	}
-
-	watchEffect(() => {
-		if (!user.platforms.includes(webApp.platform)) {
-			user.platforms.push(webApp.platform);
-		}
-	});
 
 	watch(user, saveUserData, { deep: true });
 
 	return {
 		user,
-		firebaseUid,
 		soundEffects,
 		isBoostPayed,
 		canBuyBoost,
@@ -79,3 +64,4 @@ export const useUserStore = defineStore('userStore', () => {
 		saveUserData,
 	};
 });
+

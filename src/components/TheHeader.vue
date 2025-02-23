@@ -18,7 +18,6 @@
 			</div>
 			<div class="text-gray-200">
 				<div v-if="storeUser.user.username">@{{ storeUser.user.username }}</div>
-				<div>{{ storeUser.user.firstName + storeUser.user.lastName }}</div>
 			</div>
 		</div>
 	</header>
