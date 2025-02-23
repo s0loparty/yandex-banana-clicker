@@ -17,18 +17,11 @@ const usePayBoost = () => {
 			// добавляем буст к юзеру
 			// добавляем кол-во бананов за 1 клик
 			state.user.priceOneClick = boost.bananas + 1;
-			state.user.boosts.push(boost);
-
-			console.log('path sate', state);
+			state.user.boosts.push(boost.price);
 		});
 
-		// storeUser.user.boosts.push(boost);
-		// storeUser.user.priceOneClick = boost.bananas + 1;
-
-		// сохраняем купленный буст в БД
-		// await storeUser.saveBoost();
-		// сохраняем дату юзера в бд
-		await storeUser.saveUserData();
+		await storeUser.savePlayerBoost();
+		await storeUser.savePlayerStats();
 	};
 
 	return {

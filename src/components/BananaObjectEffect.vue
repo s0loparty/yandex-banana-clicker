@@ -11,7 +11,7 @@
 		</span>
 		<img
 			:src="smallBanana"
-			class="small-image w-[2vw] drop-shadow-md"
+			class="small-image w-8 drop-shadow-md"
 		/>
 	</div>
 </template>
@@ -40,8 +40,8 @@ const stylePositionProperties = (x: number, y: number) => {
 	const offsetX = 0;
 
 	// Случайное смещение от -5 до 5 по обеим осям
-	const randomOffsetX = Math.floor(Math.random() * 11) - 50; // [-5, 5]
-	const randomOffsetY = Math.floor(Math.random() * 11) - 50; // [-5, 5]
+	const randomOffsetX = Math.floor(Math.random() * 11) - 5; // [-5, 5]
+	const randomOffsetY = Math.floor(Math.random() * 11) - 5; // [-5, 5]
 
 	return {
 		top: `${y + offsetY + randomOffsetY}px`,

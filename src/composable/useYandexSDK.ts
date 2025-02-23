@@ -8,9 +8,8 @@ export function useYandexSDK() {
 
 	// Инициализация SDK при монтировании компонента.
 	onMounted(() => {
-		if (typeof window !== 'undefined' && (window as any).yaGames) {
-			(window as any).yaGames
-				.init()
+		if (typeof window !== 'undefined' && (window as any).YaGames) {
+			(window as any).YaGames.init()
 				.then((sdk: YandexGamesSDK) => {
 					ysdk.value = sdk;
 					isReady.value = true;
@@ -20,7 +19,7 @@ export function useYandexSDK() {
 					console.error('Ошибка загрузки SDK', err);
 				});
 		} else {
-			console.warn('yaGames не найден в window. Возможно, скрипт не подключен.');
+			console.warn('YaGames не найден в window. Возможно, скрипт не подключен.');
 		}
 	});
 

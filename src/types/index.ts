@@ -2,7 +2,8 @@ interface IUserStore {
 	id: number;
 	username?: string;
 	priceOneClick: number;
-	boosts: IBoostStore[];
+	// boosts: IBoostStore[];
+	boosts: number[]; // сохраняем price буста
 	bananas: number;
 }
 
@@ -14,4 +15,3 @@ interface IBoostStore {
 	color: string;
 	description: string;
 }
-

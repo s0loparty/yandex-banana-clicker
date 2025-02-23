@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch, watchEffect } from 'vue';
 import { BOOSTS } from '@/constants';
 import { useYandexSDK } from '@/composable/useYandexSDK';
 
@@ -14,12 +14,11 @@ export const useUserStore = defineStore('userStore', () => {
 
 	const soundEffects = ref(true);
 
-	const { playerSetStats, playerSetData, playerGetStats, playerGetData } =
-		useYandexSDK();
+	const ya = useYandexSDK();
 
 	// куплен ли буст
 	const isBoostPayed = (boost: IBoostStore): boolean => {
-		return !!user.boosts.find((b) => b.label === boost.label);
+		return !!user.boosts.find((price) => price === boost.price);
 	};
 
 	// может ли купить буст
@@ -29,47 +28,90 @@ export const useUserStore = defineStore('userStore', () => {
 		});
 	});
 
-	const updateUserData = (userData: IUserStore): void => {
-		for (const key in userData) {
-			// @ts-ignore
-			user[key] = userData[key];
-
-			if (userData['boosts'] === undefined) {
-				user.boosts = [];
-			}
-		}
-	};
-
 	const addBananasPerClick = (): void => {
 		user.bananas = user.bananas + user.priceOneClick;
 	};
 
-	async function saveUserData(): Promise<void> {
-		playerSetStats({ bananas: user.bananas });
+	async function savePlayerStats(): Promise<void> {
+		try {
+			await ya.playerSetStats({
+				bananas: user.bananas,
+				priceOneClick: user.priceOneClick,
+			});
+			console.log('savePlayerStats - saved!');
+		} catch (error) {
+			console.error('savePlayerStats', error);
+		}
 	}
 
-	async function saveBoost(): Promise<void> {
-		playerSetData({ boosts: user.boosts });
+	async function savePlayerBoost(): Promise<void> {
+		try {
+			await ya.playerSetData({ boosts: [...user.boosts] }, true);
+			console.log('savePlayerBoost - saved!');
+		} catch (error) {
+			console.error('savePlayerBoost', error);
+		}
 	}
 
-	watch(user, saveUserData, { deep: true });
+	const loadUserData = async () => {
+		if (!ya.isReady.value) return;
 
-	onMounted(async () => {
-		const savedBananas = await playerGetStats(['bananas']);
-		console.log('savedBananas', savedBananas);
+		const player = await ya.initPlayer();
 
-		const savedBoosts = await playerGetData(['boosts']);
-		console.log('savedBoosts', savedBoosts);
-	});
+		if (!player) return;
+		console.log('player', player);
+
+		// USERNAME
+		user.username = player.getName();
+
+		// BANANAS
+		const playerGameStats = await player.getStats(['bananas', 'priceOneClick']);
+		if (playerGameStats?.bananas) {
+			user.bananas = playerGameStats.bananas;
+			console.log('playerGameStats bananas', playerGameStats.bananas);
+		}
+
+		// PRICE ONE CLICK
+		if (playerGameStats?.priceOneClick) {
+			user.priceOneClick = playerGameStats.priceOneClick;
+			console.log('playerGameStats priceOneClick', playerGameStats.priceOneClick);
+		}
+
+		// BOOSTS
+		console.log(await player.getData());
+
+		const playerGameData = await player.getData(['boosts']);
+		if (playerGameData?.boosts) {
+			user.boosts = playerGameData.boosts;
+			console.log('playerGameData boosts', playerGameData.boosts);
+		}
+	};
+
+	/**
+	 * Сохраняем данные каждые 20 бананов * priceOneClick
+	 * @param bananas
+	 */
+	const watcherSavePlayerStats = (bananas: number) => {
+		const TRIGGER = 20 * user.priceOneClick;
+
+		if (bananas % TRIGGER === 0) {
+			savePlayerStats();
+		}
+	};
+
+	// проблема: при loadUserData сохранение тоже срабатывает
+	watch(() => user.bananas, watcherSavePlayerStats);
+
+	// проверяем загрузился ли Yandex SDK
+	watchEffect(loadUserData);
 
 	return {
 		user,
 		soundEffects,
 		isBoostPayed,
 		canBuyBoost,
-		updateUserData,
 		addBananasPerClick,
-		saveBoost,
-		saveUserData,
+		savePlayerBoost,
+		savePlayerStats,
 	};
 });

@@ -50,5 +50,5 @@ watchEffect(() => {
 	layoutName.value = layout ? `${layout}Layout` : 'MainLayout';
 });
 
-onUnmounted(storeUser.saveUserData);
+onUnmounted(storeUser.savePlayerStats);
 </script>

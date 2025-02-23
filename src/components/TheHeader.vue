@@ -17,7 +17,7 @@
 				</div>
 			</div>
 			<div class="text-gray-200">
-				<div v-if="storeUser.user.username">@{{ storeUser.user.username }}</div>
+				<div v-if="storeUser.user.username">{{ storeUser.user.username }}</div>
 				<div v-else>unknown player</div>
 			</div>
 		</div>

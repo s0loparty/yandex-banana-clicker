@@ -6,9 +6,7 @@
 				:key="boost.label"
 				:class="[
 					'rounded shadow-md text-sm bg-slate-600 flex items-center justify-between gap-2 px-2 py-1',
-					storeUser.isBoostPayed(boost)
-						? 'border border-green-600 opacity-50 pointer-events-none'
-						: '',
+					storeUser.isBoostPayed(boost) ? 'opacity-50 pointer-events-none' : '',
 				]"
 				:style="`--tw-animate-delay: 5${idx}0ms`"
 			>
@@ -75,3 +73,4 @@ onMounted(() => {
 });
 onUnmounted(toggleBodyClasses);
 </script>
+
