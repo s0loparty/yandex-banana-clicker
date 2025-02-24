@@ -8,6 +8,7 @@
 			<img
 				alt="banana"
 				id="banana"
+				draggable="false"
 				:src="imageBanana"
 				:class="bananaImageClasses"
 				@click="handleClick"

@@ -20,10 +20,11 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref, watchEffect } from 'vue';
+import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
 import { useYandexSDK } from './composable/useYandexSDK';
+import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
 
 const storeUser = useUserStore();
@@ -50,5 +51,6 @@ watchEffect(() => {
 	layoutName.value = layout ? `${layout}Layout` : 'MainLayout';
 });
 
+onMounted(disableContextmenu);
 onUnmounted(storeUser.savePlayerStats);
 </script>

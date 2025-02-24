@@ -4,12 +4,14 @@
 			<RouterLink
 				to="/"
 				class="rounded block text-gray-300 bg-slate-600 px-3 py-1 shadow-md border border-transparent"
+				draggable="false"
 			>
 				🍌 ИГРАТЬ
 			</RouterLink>
 			<RouterLink
 				to="/boosts"
 				class="relative rounded block text-gray-300 bg-slate-600 px-3 py-1 shadow-md border border-transparent"
+				draggable="false"
 			>
 				<CirclePing v-if="storeUser.canBuyBoost" />
 				🔥 БУСТЫ
