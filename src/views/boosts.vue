@@ -4,10 +4,7 @@
 			<div
 				v-for="(boost, idx) in BOOSTS"
 				:key="boost.label"
-				:class="[
-					'rounded shadow-md text-sm bg-slate-600 flex items-center justify-between gap-2 px-2 py-1',
-					storeUser.isBoostPayed(boost) ? 'opacity-50 pointer-events-none' : '',
-				]"
+				:class="boostItemClasses(boost)"
 				:style="`--tw-animate-delay: 5${idx}0ms`"
 			>
 				<div>
@@ -23,7 +20,7 @@
 					</div>
 				</div>
 				<div
-					v-if="!storeUser.isBoostPayed(boost)"
+					v-if="!isBoostPayed(boost)"
 					class="relative"
 				>
 					<CirclePing v-show="bananas >= boost.price" />
@@ -35,7 +32,7 @@
 						:disabled="bananas < boost.price"
 						@click="handlePayBoost(boost)"
 					>
-						купить
+						получить
 					</button>
 				</div>
 			</div>
@@ -44,8 +41,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
-import { computed, onMounted, onUnmounted } from 'vue';
 import usePayBoost from '@/composable/usePayBoost';
 import useConfetti from '@/composable/useConfetti';
 import useAdvStore from '@/stores/useAdvStore';
@@ -54,11 +51,10 @@ import { BOOSTS } from '@/constants';
 
 const storeUser = useUserStore();
 
-const { handlePay } = usePayBoost();
+const { handlePay, isBoostPayed } = usePayBoost();
 const { bananasEffect } = useConfetti();
 
 const { showFullscreenAdv } = useAdvStore();
-setTimeout(showFullscreenAdv, 1000);
 
 const bananas = computed(() => storeUser.user.bananas);
 
@@ -67,11 +63,14 @@ const handlePayBoost = (boost: IBoostStore) => {
 	bananasEffect();
 };
 
-const toggleBodyClasses = (): void => {
-	document.body.classList.toggle('bg-slate-900');
-	document.body.classList.toggle('bg-blue-400/30');
-};
+const boostItemClasses = computed(() => {
+	return (boost: IBoostStore) => {
+		return [
+			{ 'opacity-50 pointer-events-none': isBoostPayed(boost) },
+			'rounded shadow-md text-sm bg-slate-600 flex items-center justify-between gap-2 px-2 py-1',
+		];
+	};
+});
 
-onMounted(toggleBodyClasses);
-onUnmounted(toggleBodyClasses);
+onMounted(showFullscreenAdv);
 </script>

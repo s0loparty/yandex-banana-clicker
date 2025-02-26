@@ -1,3 +1,5 @@
+export const BACKGROUND_ELEMENT_ID = '#background';
+
 export const BOOSTS: IBoostStore[] = [
 	{
 		price: 100,
@@ -33,12 +35,11 @@ export const BOOSTS: IBoostStore[] = [
 	},
 	{
 		price: 900,
-		label: 'Бананы Илона Маска',
-		icon: '🚀',
+		label: 'Банан + Миньоны',
+		icon: '🤪',
 		bananas: 5,
 		color: '#ff6bda',
-		description:
-			'Продуктивность твоих кликов потрясающая! Твои бананы как ракеты Маска',
+		description: 'Маленькие злодеи охотятся за бананами вместе с тобой',
 	},
 	{
 		price: 1500,
@@ -115,3 +116,20 @@ export const BOOSTS: IBoostStore[] = [
 	},
 ];
 
+export const BACKGROUNDS = [
+	{
+		id: 1,
+		price: 0,
+		class: 'default',
+		description: 'Повседневная классика жанра',
+		source: '/backgrounds/default.jpg',
+	},
+	{
+		id: 2,
+		price: 10,
+		class: 'space',
+		description:
+			'Космический банановый шторм: глубокий космос, наполненный светящимися бананами, парящими среди далёких галактик 🍌✨',
+		source: '/backgrounds/space.webp',
+	},
+];

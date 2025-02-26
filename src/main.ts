@@ -1,4 +1,6 @@
-import './style.css';
+import './assets/css/style.css';
+import './assets/css/banana-object.css';
+
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import router from './router';

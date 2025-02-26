@@ -1,9 +1,10 @@
-import { useYandexSDK } from '@/composable/useYandexSDK';
+// import { useYandexSDK } from '@/composable/useYandexSDK';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { useYandexSDKStore } from './useYandexSDKStore';
 
 const useAdvStore = defineStore('advStore', () => {
-	const ya = useYandexSDK();
+	const ya = useYandexSDKStore();
 
 	// Время перезарядки рекламы в секундах
 	const TIMEOUT_SHOW_FULLSCREEN = 60; // 60 секунд
@@ -22,7 +23,7 @@ const useAdvStore = defineStore('advStore', () => {
 		}
 
 		// Показываем рекламу сразу
-		ya.ysdk.value?.adv.showFullscreenAdv({
+		ya.ysdk?.adv.showFullscreenAdv({
 			callbacks: {
 				onClose: () => {
 					console.log('Реклама закрыта.');

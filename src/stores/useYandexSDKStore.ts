@@ -1,7 +1,8 @@
 import { YandexGamesSDK, YandexPlayer } from '@/types/yandexSDK';
-import { ref, onMounted, Ref } from 'vue';
+import { onMounted, Ref, ref } from 'vue';
+import { defineStore } from 'pinia';
 
-export function useYandexSDK() {
+export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 	const ysdk: Ref<YandexGamesSDK | null> = ref(null);
 	const player = ref<YandexPlayer | null>(null);
 	const isReady = ref(false);
@@ -24,20 +25,6 @@ export function useYandexSDK() {
 	});
 
 	/**
-	 * Показ полноэкранной рекламы.
-	 */
-	const showAd = async (): Promise<void> => {
-		if (isReady.value && ysdk.value) {
-			try {
-				await ysdk.value.adv.showFullscreenAdv();
-				console.log('Реклама успешно показана');
-			} catch (err) {
-				console.error('Ошибка показа рекламы', err);
-			}
-		}
-	};
-
-	/**
 	 * Инициализация объекта игрока.
 	 * Запрашивает игрока с запрашиваемыми данными (scopes: true).
 	 */
@@ -53,22 +40,6 @@ export function useYandexSDK() {
 			}
 		}
 		return null;
-	};
-
-	/**
-	 * Открывает диалог авторизации.
-	 * После успешной авторизации происходит повторная инициализация игрока.
-	 */
-	const openAuthDialog = async (): Promise<void> => {
-		if (isReady.value && ysdk.value) {
-			try {
-				await ysdk.value.auth.openAuthDialog();
-				console.log('Окно авторизации открыто');
-				await initPlayer();
-			} catch (err) {
-				console.error('Ошибка авторизации', err);
-			}
-		}
 	};
 
 	/**
@@ -158,9 +129,7 @@ export function useYandexSDK() {
 	return {
 		ysdk,
 		isReady,
-		showAd,
 		initPlayer,
-		openAuthDialog,
 		player,
 		playerSetData,
 		playerGetData,
@@ -168,4 +137,4 @@ export function useYandexSDK() {
 		playerIncrementStats,
 		playerGetStats,
 	};
-}
+});

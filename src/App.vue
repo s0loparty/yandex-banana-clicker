@@ -20,18 +20,19 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useYandexSDKStore } from './stores/useYandexSDKStore';
 import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
-import { useYandexSDK } from './composable/useYandexSDK';
 import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
+import usePreloadMedia from './composable/usePreloadMedia';
 
-const storeUser = useUserStore();
-const { initPlayer } = useYandexSDK();
 const router = useRouter();
+const storeUser = useUserStore();
+const { preloadMedia } = usePreloadMedia();
+const { initPlayer } = useYandexSDKStore();
 
-const layoutName = ref('MainLayout');
 const isShowApp = ref(false);
 
 const checkLoading = setTimeout(loadApp, 1000);
@@ -46,11 +47,14 @@ async function loadApp() {
 	isShowApp.value = true;
 }
 
-watchEffect(() => {
+const layoutName = computed(() => {
 	const layout = router.currentRoute.value.meta?.layout;
-	layoutName.value = layout ? `${layout}Layout` : 'MainLayout';
+	return layout ? `${layout}Layout` : 'MainLayout';
 });
 
-onMounted(disableContextmenu);
+onMounted(() => {
+	disableContextmenu();
+	preloadMedia();
+});
 onUnmounted(storeUser.savePlayerStats);
 </script>

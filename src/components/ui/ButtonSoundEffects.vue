@@ -2,7 +2,7 @@
 	<button
 		:class="computedClasses"
 		@click="toggleEffects"
-		class="flex items-center gap-2"
+		class="flex items-center gap-2 justify-center"
 	>
 		<span>ЗВУК</span>
 		<svg

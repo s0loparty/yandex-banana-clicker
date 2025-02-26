@@ -1,32 +1,33 @@
 import { defineStore } from 'pinia';
-import { computed, reactive, ref, watch, watchEffect } from 'vue';
-import { BOOSTS } from '@/constants';
-import { useYandexSDK } from '@/composable/useYandexSDK';
+import { reactive, ref, watch, watchEffect } from 'vue';
+import { BACKGROUND_ELEMENT_ID, BACKGROUNDS } from '@/constants';
+import { useYandexSDKStore } from './useYandexSDKStore';
 
 export const useUserStore = defineStore('userStore', () => {
 	const user = reactive<IUserStore>({
-		id: 0,
+		id: null,
 		username: '',
 		boosts: [],
 		priceOneClick: 1,
 		bananas: 0,
+		backgrounds: [BACKGROUNDS[0].id],
+		currentBackgroundId: BACKGROUNDS[0].id,
 	});
 
 	const soundEffects = ref(true);
 
-	const ya = useYandexSDK();
+	const ya = useYandexSDKStore();
 
-	// куплен ли буст
-	const isBoostPayed = (boost: IBoostStore): boolean => {
-		return !!user.boosts.find((price) => price === boost.price);
+	const saveBackground = async (backgroundId: number) => {
+		user.backgrounds.push(backgroundId);
+
+		try {
+			await ya.playerSetData({ backgrounds: user.backgrounds });
+			console.log('saveBackground - saved!');
+		} catch (error) {
+			console.error('saveBackground', error);
+		}
 	};
-
-	// может ли купить буст
-	const canBuyBoost = computed(() => {
-		return !!BOOSTS.find((boost) => {
-			return user.bananas >= boost.price && !isBoostPayed(boost);
-		});
-	});
 
 	const addBananasPerClick = (): void => {
 		user.bananas = user.bananas + user.priceOneClick;
@@ -54,14 +55,15 @@ export const useUserStore = defineStore('userStore', () => {
 	}
 
 	const loadUserData = async () => {
-		if (!ya.isReady.value) return;
+		if (!ya.isReady) return;
 
 		const player = await ya.initPlayer();
 
 		if (!player) return;
 		console.log('player', player);
 
-		// USERNAME
+		// USER
+		user.id = player.getUniqueID();
 		user.username = player.getName();
 
 		// BANANAS
@@ -78,14 +80,20 @@ export const useUserStore = defineStore('userStore', () => {
 		}
 
 		// BOOSTS
-		const playerGameData = await player.getData(['boosts']);
+		const playerGameData = await player.getData(['boosts', 'backgrounds']);
 		if (playerGameData?.boosts) {
 			user.boosts = playerGameData.boosts;
 			console.log('playerGameData boosts', playerGameData.boosts);
 		}
 
+		// BACKGROUNDS
+		if (playerGameData?.backgrounds) {
+			user.backgrounds = playerGameData.backgrounds;
+			console.log('playerGameData backgrounds', playerGameData.backgrounds);
+		}
+
 		// IS READY FOR GAME
-		ya.ysdk.value?.features.LoadingAPI.ready();
+		ya.ysdk?.features.LoadingAPI.ready();
 	};
 
 	/**
@@ -100,8 +108,23 @@ export const useUserStore = defineStore('userStore', () => {
 		}
 	};
 
+	const watcherBackground = (id: number) => {
+		const el = document.querySelector(BACKGROUND_ELEMENT_ID)!;
+		const elClass = BACKGROUNDS.find((i) => i.id === id)!.class;
+
+		BACKGROUNDS.forEach((bg) => {
+			if (bg.id === id) {
+				el.classList.add(elClass);
+			} else {
+				el.classList.remove(bg.class);
+			}
+		});
+	};
+
 	// проблема: при loadUserData сохранение тоже срабатывает
 	watch(() => user.bananas, watcherSavePlayerStats);
+
+	watch(() => user.currentBackgroundId, watcherBackground);
 
 	// проверяем загрузился ли Yandex SDK
 	watchEffect(loadUserData);
@@ -109,10 +132,9 @@ export const useUserStore = defineStore('userStore', () => {
 	return {
 		user,
 		soundEffects,
-		isBoostPayed,
-		canBuyBoost,
 		addBananasPerClick,
 		savePlayerBoost,
 		savePlayerStats,
+		saveBackground,
 	};
 });
