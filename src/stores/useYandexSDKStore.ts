@@ -1,9 +1,9 @@
 import { YandexGamesSDK, YandexPlayer } from '@/types/yandexSDK';
-import { onMounted, Ref, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { defineStore } from 'pinia';
 
 export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
-	const ysdk: Ref<YandexGamesSDK | null> = ref(null);
+	const ysdk = ref<YandexGamesSDK | null>(null);
 	const player = ref<YandexPlayer | null>(null);
 	const isReady = ref(false);
 
@@ -22,6 +22,10 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		} else {
 			console.warn('YaGames не найден в window. Возможно, скрипт не подключен.');
 		}
+	});
+
+	const isPlayerAuthoreized = computed(() => {
+		return player.value?.getMode() !== 'lite';
 	});
 
 	/**
@@ -126,15 +130,34 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		return null;
 	};
 
+	async function authorize(cbSuccess: Function, cbFail: Function) {
+		if (!ysdk.value || !player.value) return;
+
+		try {
+			if (player.value.getMode() === 'lite') {
+				await ysdk.value.auth.openAuthDialog();
+				player.value = await ysdk.value.getPlayer({ scopes: true }); // Повторная инициализация
+			}
+			console.log('Пользователь авторизован:', player.value);
+			cbSuccess();
+		} catch (err) {
+			console.error('Ошибка авторизации:', err);
+			cbFail();
+		}
+	}
+
 	return {
 		ysdk,
 		isReady,
-		initPlayer,
+		isPlayerAuthoreized,
 		player,
+
+		initPlayer,
 		playerSetData,
 		playerGetData,
 		playerSetStats,
 		playerIncrementStats,
 		playerGetStats,
+		authorize,
 	};
 });

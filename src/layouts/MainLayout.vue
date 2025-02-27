@@ -22,7 +22,7 @@ const route = useRoute();
 
 const wrapClasses = computed(() => {
 	return [
-		{ 'bg-black/30': route.name !== 'main' },
+		{ 'bg-black/40': route.name !== 'main' },
 		'min-h-screen max-h-screen flex flex-col items-center justify-between transition-colors',
 	];
 });

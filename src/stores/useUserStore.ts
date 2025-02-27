@@ -2,11 +2,14 @@ import { defineStore } from 'pinia';
 import { reactive, ref, watch, watchEffect } from 'vue';
 import { BACKGROUND_ELEMENT_ID, BACKGROUNDS } from '@/constants';
 import { useYandexSDKStore } from './useYandexSDKStore';
+import useFirebase from '@/composable/useFirebase';
+
+const UNKNOWN_NAME = 'неизвестный игрок';
 
 export const useUserStore = defineStore('userStore', () => {
 	const user = reactive<IUserStore>({
-		id: null,
-		username: '',
+		id: import.meta.env.DEV ? 'localhost' : null,
+		username: UNKNOWN_NAME,
 		boosts: [],
 		priceOneClick: 1,
 		bananas: 0,
@@ -17,13 +20,19 @@ export const useUserStore = defineStore('userStore', () => {
 	const soundEffects = ref(true);
 
 	const ya = useYandexSDKStore();
+	const { savePlayerScore } = useFirebase();
 
 	const saveBackground = async (backgroundId: number) => {
+		const bgItem = BACKGROUNDS.find((i) => i.id === backgroundId)!;
+
+		user.bananas = user.bananas - bgItem.price;
 		user.backgrounds.push(backgroundId);
 
 		try {
 			await ya.playerSetData({ backgrounds: user.backgrounds });
 			console.log('saveBackground - saved!');
+
+			await savePlayerStats();
 		} catch (error) {
 			console.error('saveBackground', error);
 		}
@@ -64,7 +73,7 @@ export const useUserStore = defineStore('userStore', () => {
 
 		// USER
 		user.id = player.getUniqueID();
-		user.username = player.getName();
+		user.username = player.getName() ?? UNKNOWN_NAME;
 
 		// BANANAS
 		const playerGameStats = await player.getStats(['bananas', 'priceOneClick']);
@@ -100,21 +109,24 @@ export const useUserStore = defineStore('userStore', () => {
 	 * Сохраняем данные каждые 20 бананов * priceOneClick
 	 * @param bananas
 	 */
-	const watcherSavePlayerStats = (bananas: number) => {
+	const watcherSavePlayerStats = async (bananas: number) => {
 		const TRIGGER = 20 * user.priceOneClick;
 
 		if (bananas % TRIGGER === 0) {
-			savePlayerStats();
+			await savePlayerStats();
+			await savePlayerScore();
 		}
 	};
 
-	const watcherBackground = (id: number) => {
-		const el = document.querySelector(BACKGROUND_ELEMENT_ID)!;
-		const elClass = BACKGROUNDS.find((i) => i.id === id)!.class;
+	const changeBackgroundById = (id: number) => {
+		const el = document.querySelector(BACKGROUND_ELEMENT_ID)! as HTMLElement;
+		const background = BACKGROUNDS.find((i) => i.id === id)!;
+
+		el.style.backgroundImage = `url(${background.source})`;
 
 		BACKGROUNDS.forEach((bg) => {
 			if (bg.id === id) {
-				el.classList.add(elClass);
+				el.classList.add(background.class);
 			} else {
 				el.classList.remove(bg.class);
 			}
@@ -124,7 +136,7 @@ export const useUserStore = defineStore('userStore', () => {
 	// проблема: при loadUserData сохранение тоже срабатывает
 	watch(() => user.bananas, watcherSavePlayerStats);
 
-	watch(() => user.currentBackgroundId, watcherBackground);
+	watch(() => user.currentBackgroundId, changeBackgroundById);
 
 	// проверяем загрузился ли Yandex SDK
 	watchEffect(loadUserData);
@@ -136,5 +148,6 @@ export const useUserStore = defineStore('userStore', () => {
 		savePlayerBoost,
 		savePlayerStats,
 		saveBackground,
+		changeBackgroundById,
 	};
 });

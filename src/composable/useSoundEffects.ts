@@ -1,10 +1,12 @@
 import { useUserStore } from '@/stores/useUserStore';
-import soundClick from '@/assets/sounds/click.mp3';
-import soundBoost from '@/assets/sounds/boost.mp3';
-import soundBackground from '@/assets/sounds/boost.mp3';
+// import soundClick from '@/assets/sounds/click.mp3';
+// import soundBoost from '@/assets/sounds/boost.mp3';
+// import soundBackground from '@/assets/sounds/boost.mp3';
+import usePreloadMedia from './usePreloadMedia';
 
 const useSoundEffects = () => {
 	const storeUser = useUserStore();
+	const { soundClick, soundBoost, soundBackground } = usePreloadMedia();
 
 	const playBananaClick = (): void => {
 		if (!storeUser.soundEffects) return;
@@ -49,4 +51,3 @@ const useSoundEffects = () => {
 };
 
 export default useSoundEffects;
-

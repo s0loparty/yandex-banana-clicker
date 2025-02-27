@@ -8,11 +8,13 @@
 			>
 				<img
 					:src="background.source"
-					class="object-cover rounded-md"
+					class="object-cover w-full rounded-md h-64 sm:min-h-[388px]"
 				/>
 				<div class="absolute inset-0 flex items-end justify-end p-2">
 					<div class="bg-black/80 p-2 rounded-md w-full">
-						<p class="text-white italic">{{ background.description }}</p>
+						<p class="text-white text-sm sm:text-base">
+							{{ background.description }}
+						</p>
 
 						<!-- если фон куплен -->
 						<button

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .router-link-active {
 	@apply border border-yellow-500;
 }
@@ -20,24 +19,10 @@ body {
 	position: relative;
 }
 
-#background {
-	position: absolute;
-	content: '';
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	z-index: -1;
-}
-
-#background.default {
-	background-image: url('/backgrounds/default.webp');
-	background-repeat: repeat;
-}
-
-#background.space {
-	background-image: url('/backgrounds/space.webp');
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+/* банан на главной */
+.main-banana {
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-user-drag: none;
 }

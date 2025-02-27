@@ -20,7 +20,26 @@
 					</div>
 				</div>
 				<div
-					v-if="!isBoostPayed(boost)"
+					v-if="isBoostPayed(boost)"
+					class="grow flex justify-center items-center"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="size-8 text-green-600"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+						/>
+					</svg>
+				</div>
+				<div
+					v-else
 					class="relative"
 				>
 					<CirclePing v-show="bananas >= boost.price" />
@@ -66,8 +85,8 @@ const handlePayBoost = (boost: IBoostStore) => {
 const boostItemClasses = computed(() => {
 	return (boost: IBoostStore) => {
 		return [
-			{ 'opacity-50 pointer-events-none': isBoostPayed(boost) },
-			'rounded shadow-md text-sm bg-slate-600 flex items-center justify-between gap-2 px-2 py-1',
+			isBoostPayed(boost) ? 'pointer-events-none bg-slate-800' : 'bg-slate-600',
+			'rounded shadow-md text-sm flex items-center justify-between gap-2 px-2 py-1',
 		];
 	};
 });

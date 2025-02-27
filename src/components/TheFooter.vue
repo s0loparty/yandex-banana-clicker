@@ -1,8 +1,6 @@
 <template>
 	<footer class="w-full bg-slate-700 rounded-t-md">
-		<div
-			class="px-4 py-4 items-center gap-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4"
-		>
+		<div class="p-4 items-center gap-4 flex flex-wrap justify-center">
 			<RouterLink
 				to="/"
 				class="rounded block text-gray-300 bg-slate-600 px-3 py-1 shadow-md border border-transparent text-center"
@@ -25,6 +23,13 @@
 			>
 				<CirclePing v-if="canBuyBackground" />
 				🌈 ФОНЫ
+			</RouterLink>
+			<RouterLink
+				to="/top"
+				class="relative rounded block text-gray-300 bg-slate-600 px-3 py-1 shadow-md border border-transparent text-center"
+				draggable="false"
+			>
+				⭐ ТОП
 			</RouterLink>
 			<ButtonSoundEffects />
 		</div>

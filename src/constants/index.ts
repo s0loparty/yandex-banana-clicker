@@ -1,4 +1,10 @@
+import BGDefault from '@/assets/backgrounds/default.webp';
+import BGSpace from '@/assets/backgrounds/space.webp';
+import BGJungle from '@/assets/backgrounds/jungle.webp';
+
 export const BACKGROUND_ELEMENT_ID = '#background';
+
+export const FIREBASE_DB_PATH = 'yandex-banana-clicker-top';
 
 export const BOOSTS: IBoostStore[] = [
 	{
@@ -122,7 +128,7 @@ export const BACKGROUNDS = [
 		price: 0,
 		class: 'default',
 		description: 'Повседневная классика жанра',
-		source: '/backgrounds/default.jpg',
+		source: BGDefault,
 	},
 	{
 		id: 2,
@@ -130,6 +136,14 @@ export const BACKGROUNDS = [
 		class: 'space',
 		description:
 			'Космический банановый шторм: глубокий космос, наполненный светящимися бананами, парящими среди далёких галактик 🍌✨',
-		source: '/backgrounds/space.webp',
+		source: BGSpace,
+	},
+	{
+		id: 3,
+		price: 10,
+		class: 'jungle',
+		description:
+			'Мягкий солнечный свет пробивается сквозь листву, создавая уютную атмосферу. Передаёт дух приключений в мире банана-кликера! 🍌🌿',
+		source: BGJungle,
 	},
 ];

@@ -1,7 +1,7 @@
 <template>
 	<main
 		ref="wrapRef"
-		class="relative grow flex items-center justify-center rounded-full w-[350px] h-[350px] bg-black/15"
+		class="relative grow flex items-center justify-center rounded-full w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] bg-black/15"
 	>
 		<XyzTransition
 			appear
@@ -32,7 +32,10 @@ const soundEffects = useSoundEffects();
 
 const scaleClasses = ref('');
 const bananaImageClasses = computed(() => {
-	return ['mx-auto w-full duration-[100ms] landscape:max-w-[300px]', scaleClasses.value];
+	return [
+		'main-banana mx-auto w-[200px] sm:w-full duration-[100ms] landscape:max-w-[300px]',
+		scaleClasses.value,
+	];
 });
 
 const effectPosition = reactive({ x: 0, y: 0 });

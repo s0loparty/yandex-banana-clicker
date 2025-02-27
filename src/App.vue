@@ -29,7 +29,7 @@ import bananImage from '@/assets/images/banana.png';
 import usePreloadMedia from './composable/usePreloadMedia';
 
 const router = useRouter();
-const storeUser = useUserStore();
+const userStore = useUserStore();
 const { preloadMedia } = usePreloadMedia();
 const { initPlayer } = useYandexSDKStore();
 
@@ -55,6 +55,7 @@ const layoutName = computed(() => {
 onMounted(() => {
 	disableContextmenu();
 	preloadMedia();
+	userStore.changeBackgroundById(1);
 });
-onUnmounted(storeUser.savePlayerStats);
+onUnmounted(userStore.savePlayerStats);
 </script>
