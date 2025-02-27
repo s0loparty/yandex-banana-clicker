@@ -38,7 +38,10 @@ function closeModal() {
 	showModal.value = false;
 }
 
-const authorize = () => yaStore.authorize(closeModal, closeModal);
+const authorize = () =>
+	yaStore.authorize(() => {
+		console.log('Игрок авторизовался!');
+	}, closeModal);
 
 onMounted(() => {
 	if (yaStore.isPlayerAuthoreized) return;

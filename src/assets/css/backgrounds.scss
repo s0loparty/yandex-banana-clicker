@@ -7,7 +7,7 @@
 	left: 0;
 	z-index: -1;
 	background-position: left center;
-	animation: backgroundMove 200s ease-in-out infinite alternate;
+	animation: backgroundMove 400s ease-in-out infinite alternate;
 
 	@media screen and (max-width: 600px) {
 		animation-duration: 400s;

@@ -16,7 +16,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Твой клик как бумеранг, возвращается к тебе',
 	},
 	{
-		price: 200,
+		price: 500,
 		label: 'Суперспринт',
 		icon: '🏃',
 		bananas: 2,
@@ -24,7 +24,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Ты уже встал на дорожку с которой не сойти',
 	},
 	{
-		price: 300,
+		price: 800,
 		label: 'Взрыв банана',
 		icon: '💥',
 		bananas: 3,
@@ -32,7 +32,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Твои клики РАЗРЫВАЮТ всю банановую тусовку',
 	},
 	{
-		price: 600,
+		price: 1200,
 		label: 'Невидимый банан',
 		icon: '👀',
 		bananas: 4,
@@ -40,7 +40,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Ты их не видишь, а они есть',
 	},
 	{
-		price: 900,
+		price: 1500,
 		label: 'Банан + Миньоны',
 		icon: '🤪',
 		bananas: 5,
@@ -48,7 +48,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Маленькие злодеи охотятся за бананами вместе с тобой',
 	},
 	{
-		price: 1500,
+		price: 1900,
 		label: 'Банановый щит',
 		icon: '🛡️',
 		bananas: 6,
@@ -64,7 +64,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Банановый банан Банановый банан Банановый банан',
 	},
 	{
-		price: 3999,
+		price: 4000,
 		label: 'Шокирующий банан',
 		icon: '⚡️',
 		bananas: 8,
@@ -72,7 +72,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'ШОК КОНТЕНТ!!! Бананов ещё больше!',
 	},
 	{
-		price: 5000,
+		price: 7000,
 		label: 'Телепортация банана',
 		icon: '🌀',
 		bananas: 9,
@@ -80,7 +80,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Банан там, банан тут, банан вон там и вот здесь и ещё один вооон там',
 	},
 	{
-		price: 6500,
+		price: 10000,
 		label: 'Вихрь бананов',
 		icon: '🌪️',
 		bananas: 10,
@@ -88,7 +88,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Кому-то бананы вскружили голову??)))',
 	},
 	{
-		price: 10000,
+		price: 15000,
 		label: 'Турбобананы',
 		icon: '🔥🔥🔥',
 		bananas: 20,
@@ -96,7 +96,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Ты как Вин Дизель — бананы твоя семья',
 	},
 	{
-		price: 20000,
+		price: 50000,
 		label: 'Банановая мощь',
 		icon: '🦾',
 		bananas: 35,
@@ -104,7 +104,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Дуэйн (Банан) Джонсон - нерушимая скала из бананов',
 	},
 	{
-		price: 50000,
+		price: 100000,
 		label: 'Банан Зевса',
 		icon: '🍌',
 		bananas: 55,
@@ -112,7 +112,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Зевс ультует',
 	},
 	{
-		price: 10000000,
+		price: 500000,
 		label: 'Банановый Дзен',
 		icon: '💫',
 		bananas: 99,

@@ -21,7 +21,7 @@
 				</div>
 				<div
 					v-if="isBoostPayed(boost)"
-					class="grow flex justify-center items-center"
+					class="pr-6"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
