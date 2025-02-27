@@ -47,6 +47,7 @@ export const useUserStore = defineStore('userStore', () => {
 			await ya.playerSetStats({
 				bananas: user.bananas,
 				priceOneClick: user.priceOneClick,
+				currentBackgroundId: user.currentBackgroundId,
 			});
 			console.log('savePlayerStats - saved!');
 		} catch (error) {
@@ -86,6 +87,15 @@ export const useUserStore = defineStore('userStore', () => {
 		if (playerGameStats?.priceOneClick) {
 			user.priceOneClick = playerGameStats.priceOneClick;
 			console.log('playerGameStats priceOneClick', playerGameStats.priceOneClick);
+		}
+
+		// CURRENT BACKGROUND ID
+		if (playerGameStats?.currentBackgroundId) {
+			user.currentBackgroundId = playerGameStats.currentBackgroundId;
+			console.log(
+				'playerGameStats currentBackgroundId',
+				playerGameStats.currentBackgroundId
+			);
 		}
 
 		// BOOSTS
