@@ -1,4 +1,6 @@
 <template>
+	<TheBackground />
+
 	<component
 		v-if="isShowApp"
 		:is="layoutName"
@@ -27,6 +29,7 @@ import { useRouter } from 'vue-router';
 import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
 import usePreloadMedia from './composable/usePreloadMedia';
+import TheBackground from '@/components/TheBackground.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -55,7 +58,6 @@ const layoutName = computed(() => {
 onMounted(() => {
 	disableContextmenu();
 	preloadMedia();
-	userStore.changeBackgroundById(1);
 });
 onUnmounted(userStore.savePlayerStats);
 </script>

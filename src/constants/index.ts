@@ -2,8 +2,6 @@ import BGDefault from '@/assets/backgrounds/default.webp';
 import BGSpace from '@/assets/backgrounds/space.webp';
 import BGJungle from '@/assets/backgrounds/jungle.webp';
 
-export const BACKGROUND_ELEMENT_ID = '#background';
-
 export const FIREBASE_DB_PATH = 'yandex-banana-clicker-top';
 
 export const BOOSTS: IBoostStore[] = [

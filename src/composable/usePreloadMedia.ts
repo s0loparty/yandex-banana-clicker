@@ -12,8 +12,6 @@ const usePreloadMedia = () => {
 		urls.forEach((url) => {
 			const img = new Image();
 			img.src = url;
-
-			console.log('[preloadImages]', img);
 		});
 	};
 
@@ -22,8 +20,6 @@ const usePreloadMedia = () => {
 			const audio = new Audio();
 			audio.preload = 'auto';
 			audio.src = url;
-
-			console.log('[preloadAudio]', audio);
 		});
 	};
 

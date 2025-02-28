@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { reactive, ref, watch, watchEffect } from 'vue';
-import { BACKGROUND_ELEMENT_ID, BACKGROUNDS } from '@/constants';
+import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
+import { BACKGROUNDS } from '@/constants';
 import { useYandexSDKStore } from './useYandexSDKStore';
 import useFirebase from '@/composable/useFirebase';
 
@@ -77,26 +77,36 @@ export const useUserStore = defineStore('userStore', () => {
 		user.username = player.getName() ?? UNKNOWN_NAME;
 
 		// BANANAS
-		const playerGameStats = await player.getStats(['bananas', 'priceOneClick']);
-		if (playerGameStats?.bananas) {
-			user.bananas = playerGameStats.bananas;
-			console.log('playerGameStats bananas', playerGameStats.bananas);
-		}
+		const arrStatKeys = ['bananas', 'priceOneClick', 'currentBackgroundId'];
+		const playerGameStats = await player.getStats(arrStatKeys);
+		console.log('playerGameStats', playerGameStats);
 
-		// PRICE ONE CLICK
-		if (playerGameStats?.priceOneClick) {
-			user.priceOneClick = playerGameStats.priceOneClick;
-			console.log('playerGameStats priceOneClick', playerGameStats.priceOneClick);
-		}
+		Object.entries(playerGameStats).forEach(([key, value]) => {
+			if (key in user) {
+				// @ts-expect-error Тип "number" не может быть назначен для типа "never".ts(2322)
+				user[key as keyof typeof user] = value;
+			}
+		});
 
-		// CURRENT BACKGROUND ID
-		if (playerGameStats?.currentBackgroundId) {
-			user.currentBackgroundId = playerGameStats.currentBackgroundId;
-			console.log(
-				'playerGameStats currentBackgroundId',
-				playerGameStats.currentBackgroundId
-			);
-		}
+		// if (playerGameStats?.bananas) {
+		// 	user.bananas = playerGameStats.bananas;
+		// 	console.log('playerGameStats bananas', playerGameStats.bananas);
+		// }
+
+		// // PRICE ONE CLICK
+		// if (playerGameStats?.priceOneClick) {
+		// 	user.priceOneClick = playerGameStats.priceOneClick;
+		// 	console.log('playerGameStats priceOneClick', playerGameStats.priceOneClick);
+		// }
+
+		// // CURRENT BACKGROUND ID
+		// if (playerGameStats?.currentBackgroundId) {
+		// 	user.currentBackgroundId = playerGameStats.currentBackgroundId;
+		// 	console.log(
+		// 		'playerGameStats currentBackgroundId',
+		// 		playerGameStats.currentBackgroundId
+		// 	);
+		// }
 
 		// BOOSTS
 		const playerGameData = await player.getData(['boosts', 'backgrounds']);
@@ -119,37 +129,28 @@ export const useUserStore = defineStore('userStore', () => {
 	 * Сохраняем данные каждые 20 бананов * priceOneClick
 	 * @param bananas
 	 */
-	const watcherSavePlayerStats = async (bananas: number) => {
+	const watcherSavePlayerStats = (bananas: number) => {
 		const TRIGGER = 20 * user.priceOneClick;
 
-		if (bananas % TRIGGER === 0) {
-			await savePlayerStats();
-			await savePlayerScore();
+		const round = Math.round(bananas);
+
+		if (round % TRIGGER === 0) {
+			console.log('triggered');
+			savePlayerStats();
+			savePlayerScore();
 		}
-	};
-
-	const changeBackgroundById = (id: number) => {
-		const el = document.querySelector(BACKGROUND_ELEMENT_ID)! as HTMLElement;
-		const background = BACKGROUNDS.find((i) => i.id === id)!;
-
-		el.style.backgroundImage = `url(${background.source})`;
-
-		BACKGROUNDS.forEach((bg) => {
-			if (bg.id === id) {
-				el.classList.add(background.class);
-			} else {
-				el.classList.remove(bg.class);
-			}
-		});
 	};
 
 	// проблема: при loadUserData сохранение тоже срабатывает
 	watch(() => user.bananas, watcherSavePlayerStats);
 
-	watch(() => user.currentBackgroundId, changeBackgroundById);
-
 	// проверяем загрузился ли Yandex SDK
 	watchEffect(loadUserData);
+
+	// закрытие страницы
+	onMounted(() => {
+		window.addEventListener('beforeunload', savePlayerStats);
+	});
 
 	return {
 		user,
@@ -158,6 +159,5 @@ export const useUserStore = defineStore('userStore', () => {
 		savePlayerBoost,
 		savePlayerStats,
 		saveBackground,
-		changeBackgroundById,
 	};
 });

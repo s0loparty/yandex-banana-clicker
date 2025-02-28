@@ -1,10 +1,10 @@
 interface IUserStore {
 	id: string | null;
-	username?: string;
+	username: string;
 	priceOneClick: number;
 	boosts: number[]; // сохраняем price буста
 	bananas: number;
-	backgrounds: number[];
+	backgrounds: number[]; // сохраняем id фона
 	currentBackgroundId: number;
 }
 
