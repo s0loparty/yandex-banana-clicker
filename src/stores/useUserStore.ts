@@ -17,10 +17,13 @@ export const useUserStore = defineStore('userStore', () => {
 		currentBackgroundId: BACKGROUNDS[0].id,
 	});
 
+	const lastSavedBananaCount = ref(0);
+	const saveTimeout = ref<NodeJS.Timeout | null>(null);
+
 	const soundEffects = ref(true);
 
 	const ya = useYandexSDKStore();
-	const { savePlayerScore } = useFirebase();
+	const fb = useFirebase();
 
 	const saveBackground = async (backgroundId: number) => {
 		const bgItem = BACKGROUNDS.find((i) => i.id === backgroundId)!;
@@ -125,24 +128,35 @@ export const useUserStore = defineStore('userStore', () => {
 		ya.ysdk?.features.LoadingAPI.ready();
 	};
 
-	/**
-	 * Сохраняем данные каждые 20 бананов * priceOneClick
-	 * @param bananas
-	 */
-	const watcherSavePlayerStats = (bananas: number) => {
-		const TRIGGER = 20 * user.priceOneClick;
+	async function saveInDatabases() {
+		if (user.bananas === lastSavedBananaCount.value) return; // Если ничего не изменилось, не сохраняем
 
-		const round = Math.round(bananas);
-
-		if (round % TRIGGER === 0) {
-			console.log('triggered');
+		try {
 			savePlayerStats();
-			savePlayerScore();
+			fb.savePlayerScore();
+
+			lastSavedBananaCount.value = user.bananas; // Обновляем последнее сохранённое значение
+		} catch (error) {
+			console.error('Ошибка сохранения бананов:', error);
 		}
-	};
+	}
+
+	function watcherUpdateBananas() {
+		console.log('watcherUpdateBananas');
+
+		// Если таймер уже запущен, сбрасываем его
+		if (saveTimeout.value) {
+			console.log('Если таймер уже запущен, сбрасываем его');
+
+			clearTimeout(saveTimeout.value);
+		}
+
+		// Ставим новый таймер (отправка раз в 2 секунды)
+		saveTimeout.value = setTimeout(saveInDatabases, 2000);
+	}
 
 	// проблема: при loadUserData сохранение тоже срабатывает
-	watch(() => user.bananas, watcherSavePlayerStats);
+	watch(() => user.bananas, watcherUpdateBananas);
 
 	// проверяем загрузился ли Yandex SDK
 	watchEffect(loadUserData);

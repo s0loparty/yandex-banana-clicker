@@ -22,9 +22,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useYandexSDKStore } from './stores/useYandexSDKStore';
-import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
 import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
@@ -32,7 +31,6 @@ import usePreloadMedia from './composable/usePreloadMedia';
 import TheBackground from '@/components/TheBackground.vue';
 
 const router = useRouter();
-const userStore = useUserStore();
 const { preloadMedia } = usePreloadMedia();
 const { initPlayer } = useYandexSDKStore();
 
@@ -59,5 +57,4 @@ onMounted(() => {
 	disableContextmenu();
 	preloadMedia();
 });
-onUnmounted(userStore.savePlayerStats);
 </script>

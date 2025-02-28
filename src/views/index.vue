@@ -8,20 +8,21 @@
 			xyz="fade rotate-right ease-out-back"
 			mode="in-out"
 		>
-			<img
-				alt="banana"
+			<div
 				id="banana"
-				draggable="false"
-				:src="imageBanana"
-				:class="bananaImageClasses"
+				:class="[
+					'main-banana bg-no-repeat bg-contain bg-center mx-auto w-[200px] h-[200px] sm:w-full duration-[100ms] landscape:max-w-[300px]',
+					scaleClasses,
+				]"
+				:style="{ backgroundImage: `url(${imageBanana})` }"
 				@click="handleClick"
-			/>
+			></div>
 		</XyzTransition>
 	</main>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, useTemplateRef } from 'vue';
+import { reactive, ref, useTemplateRef } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import useSoundEffects from '@/composable/useSoundEffects';
 import imageBanana from '@/assets/images/banana.png';
@@ -31,12 +32,6 @@ const storeUser = useUserStore();
 const soundEffects = useSoundEffects();
 
 const scaleClasses = ref('');
-const bananaImageClasses = computed(() => {
-	return [
-		'main-banana mx-auto w-[200px] sm:w-full duration-[100ms] landscape:max-w-[300px]',
-		scaleClasses.value,
-	];
-});
 
 const effectPosition = reactive({ x: 0, y: 0 });
 const wrapRef = useTemplateRef('wrapRef')!;
