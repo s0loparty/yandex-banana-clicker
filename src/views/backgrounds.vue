@@ -10,7 +10,7 @@
 					:src="background.source"
 					class="object-cover w-full rounded-md h-64 sm:min-h-[388px]"
 				/>
-				<div class="absolute inset-0 flex items-end justify-end p-2">
+				<div class="absolute inset-0 flex items-end justify-end">
 					<div class="bg-black/80 p-2 rounded-md w-full">
 						<p class="text-white text-sm sm:text-base">
 							{{ background.description }}
@@ -19,11 +19,15 @@
 						<!-- если фон куплен -->
 						<button
 							v-if="payed(background.id)"
-							class="px-4 py-1 rounded text-white bg-blue-400 mt-2 disabled:hidden"
+							class="px-4 py-1 rounded text-white bg-blue-400 mt-2 disabled:bg-slate-700"
 							:disabled="user.currentBackgroundId === background.id"
 							@click="setBackground(background.id)"
 						>
-							применить
+							{{
+								user.currentBackgroundId === background.id
+									? 'текущий'
+									: 'применить'
+							}}
 						</button>
 
 						<!-- если фон не куплен -->

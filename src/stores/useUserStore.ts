@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
 import { BACKGROUNDS } from '@/constants';
 import { useYandexSDKStore } from './useYandexSDKStore';
-import useFirebase from '@/composable/useFirebase';
+import { useLeaderboardStore } from './useLeaderboardStore';
 
 const UNKNOWN_NAME = 'неизвестный игрок';
 
@@ -22,8 +22,8 @@ export const useUserStore = defineStore('userStore', () => {
 
 	const soundEffects = ref(true);
 
-	const ya = useYandexSDKStore();
-	const fb = useFirebase();
+	const yaStore = useYandexSDKStore();
+	const leaderboardStore = useLeaderboardStore();
 
 	const saveBackground = async (backgroundId: number) => {
 		const bgItem = BACKGROUNDS.find((i) => i.id === backgroundId)!;
@@ -32,7 +32,7 @@ export const useUserStore = defineStore('userStore', () => {
 		user.backgrounds.push(backgroundId);
 
 		try {
-			await ya.playerSetData({ backgrounds: user.backgrounds });
+			await yaStore.playerSetData({ backgrounds: user.backgrounds });
 			console.log('saveBackground - saved!');
 
 			await savePlayerStats();
@@ -47,7 +47,7 @@ export const useUserStore = defineStore('userStore', () => {
 
 	async function savePlayerStats(): Promise<void> {
 		try {
-			await ya.playerSetStats({
+			await yaStore.playerSetStats({
 				bananas: user.bananas,
 				priceOneClick: user.priceOneClick,
 				currentBackgroundId: user.currentBackgroundId,
@@ -60,7 +60,7 @@ export const useUserStore = defineStore('userStore', () => {
 
 	async function savePlayerBoost(): Promise<void> {
 		try {
-			await ya.playerSetData({ boosts: [...user.boosts] }, true);
+			await yaStore.playerSetData({ boosts: [...user.boosts] }, true);
 			console.log('savePlayerBoost - saved!');
 		} catch (error) {
 			console.error('savePlayerBoost', error);
@@ -68,12 +68,11 @@ export const useUserStore = defineStore('userStore', () => {
 	}
 
 	const loadUserData = async () => {
-		if (!ya.isReady) return;
+		if (!yaStore.isReady) return;
 
-		const player = await ya.initPlayer();
+		const player = await yaStore.initPlayer();
 
 		if (!player) return;
-		console.log('player', player);
 
 		// USER
 		user.id = player.getUniqueID();
@@ -91,26 +90,6 @@ export const useUserStore = defineStore('userStore', () => {
 			}
 		});
 
-		// if (playerGameStats?.bananas) {
-		// 	user.bananas = playerGameStats.bananas;
-		// 	console.log('playerGameStats bananas', playerGameStats.bananas);
-		// }
-
-		// // PRICE ONE CLICK
-		// if (playerGameStats?.priceOneClick) {
-		// 	user.priceOneClick = playerGameStats.priceOneClick;
-		// 	console.log('playerGameStats priceOneClick', playerGameStats.priceOneClick);
-		// }
-
-		// // CURRENT BACKGROUND ID
-		// if (playerGameStats?.currentBackgroundId) {
-		// 	user.currentBackgroundId = playerGameStats.currentBackgroundId;
-		// 	console.log(
-		// 		'playerGameStats currentBackgroundId',
-		// 		playerGameStats.currentBackgroundId
-		// 	);
-		// }
-
 		// BOOSTS
 		const playerGameData = await player.getData(['boosts', 'backgrounds']);
 		if (playerGameData?.boosts) {
@@ -125,29 +104,27 @@ export const useUserStore = defineStore('userStore', () => {
 		}
 
 		// IS READY FOR GAME
-		ya.ysdk?.features.LoadingAPI.ready();
+		yaStore.ysdk?.features.LoadingAPI.ready();
 	};
 
 	async function saveInDatabases() {
-		if (user.bananas === lastSavedBananaCount.value) return; // Если ничего не изменилось, не сохраняем
+		// Если ничего не изменилось, не сохраняем
+		if (user.bananas === lastSavedBananaCount.value) return;
 
 		try {
 			savePlayerStats();
-			fb.savePlayerScore();
+			leaderboardStore.savePlayerInLeaderboard();
 
-			lastSavedBananaCount.value = user.bananas; // Обновляем последнее сохранённое значение
+			// Обновляем последнее сохранённое значение
+			lastSavedBananaCount.value = user.bananas;
 		} catch (error) {
-			console.error('Ошибка сохранения бананов:', error);
+			console.error('[saveInDatabases] Ошибка сохранения бананов:', error);
 		}
 	}
 
 	function watcherUpdateBananas() {
-		console.log('watcherUpdateBananas');
-
 		// Если таймер уже запущен, сбрасываем его
 		if (saveTimeout.value) {
-			console.log('Если таймер уже запущен, сбрасываем его');
-
 			clearTimeout(saveTimeout.value);
 		}
 

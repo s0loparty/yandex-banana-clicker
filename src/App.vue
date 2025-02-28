@@ -7,6 +7,7 @@
 	>
 		<RouterView />
 	</component>
+
 	<div
 		v-else
 		class="h-screen flex items-center justify-center gap-4"
@@ -23,7 +24,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { useYandexSDKStore } from './stores/useYandexSDKStore';
 import { useRouter } from 'vue-router';
 import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
@@ -32,7 +32,6 @@ import TheBackground from '@/components/TheBackground.vue';
 
 const router = useRouter();
 const { preloadMedia } = usePreloadMedia();
-const { initPlayer } = useYandexSDKStore();
 
 const isShowApp = ref(false);
 
@@ -40,8 +39,6 @@ const checkLoading = setTimeout(loadApp, 1000);
 
 async function loadApp() {
 	clearInterval(checkLoading);
-
-	await initPlayer();
 
 	router.push('/');
 

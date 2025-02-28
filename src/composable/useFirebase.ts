@@ -19,8 +19,6 @@ const useFirebase = () => {
 
 	// Функция сохранения результата игрока
 	async function savePlayerScore(): Promise<void> {
-		console.log('userStore.user', userStore.user);
-
 		if (!userStore.user.id) return;
 
 		// если игрок не авторизован - не сохраняем его в бд
@@ -58,8 +56,6 @@ const useFirebase = () => {
 		try {
 			const snapshot = await get(topPlayersQuery);
 			if (!snapshot.exists()) return [];
-
-			console.log('snapshot.val()', snapshot.val());
 
 			// Firebase возвращает объекты, преобразуем их в массив
 			// const players: Player[] = Object.values(snapshot.val()) as Player[];

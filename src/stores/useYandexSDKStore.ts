@@ -146,6 +146,13 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		}
 	}
 
+	const startPlay = () => {
+		ysdk.value?.features.GameplayAPI.start();
+	};
+	const stopPlay = () => {
+		ysdk.value?.features.GameplayAPI.stop();
+	};
+
 	return {
 		ysdk,
 		isReady,
@@ -159,5 +166,8 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		playerIncrementStats,
 		playerGetStats,
 		authorize,
+
+		startPlay,
+		stopPlay,
 	};
 });

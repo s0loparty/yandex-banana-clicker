@@ -1,8 +1,11 @@
 import BGDefault from '@/assets/backgrounds/default.webp';
 import BGSpace from '@/assets/backgrounds/space.webp';
 import BGJungle from '@/assets/backgrounds/jungle.webp';
+import BGUnderground from '@/assets/backgrounds/underground.webp';
 
 export const FIREBASE_DB_PATH = 'yandex-banana-clicker-top';
+export const YANDEX_COUNT_TOP_PLAYERS = 50;
+export const YANDEX_LEADERBOARD_NAME = 'bananaTopPlayers';
 
 export const BOOSTS: IBoostStore[] = [
 	{
@@ -125,12 +128,13 @@ export const BACKGROUNDS = [
 		id: 1,
 		price: 0,
 		class: 'default',
-		description: 'Повседневная классика жанра',
+		description:
+			'Банановый хаос: весёлый узор из ярких бананов, разбросанных в художественном беспорядке 🍌🎨✨',
 		source: BGDefault,
 	},
 	{
 		id: 2,
-		price: 2000,
+		price: 0,
 		class: 'space',
 		description:
 			'Космический банановый шторм: глубокий космос, наполненный светящимися бананами, парящими среди далёких галактик 🍌✨',
@@ -138,10 +142,18 @@ export const BACKGROUNDS = [
 	},
 	{
 		id: 3,
-		price: 10000,
+		price: 0,
 		class: 'jungle',
 		description:
 			'Мягкий солнечный свет пробивается сквозь листву, создавая уютную атмосферу. Передаёт дух приключений в мире банана-кликера! 🍌🌿',
 		source: BGJungle,
+	},
+	{
+		id: 4,
+		price: 0,
+		class: 'underground',
+		description:
+			'Подземелье бананового короля: таинственные каменные стены, слабо освещённые факелами, а повсюду разбросаны золотистые бананы, хранящие древние секреты 🍌🔥🔮',
+		source: BGUnderground,
 	},
 ];

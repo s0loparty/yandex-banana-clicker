@@ -1,6 +1,7 @@
 <template>
 	<main
 		ref="wrapRef"
+		id="wrap-banana"
 		class="relative grow flex items-center justify-center rounded-full w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] bg-black/15"
 	>
 		<XyzTransition
@@ -28,7 +29,7 @@ import useSoundEffects from '@/composable/useSoundEffects';
 import imageBanana from '@/assets/images/banana.png';
 import smallBanana from '@/assets/images/small-banana.png';
 
-const storeUser = useUserStore();
+const userStore = useUserStore();
 const soundEffects = useSoundEffects();
 
 const scaleClasses = ref('');
@@ -42,7 +43,7 @@ const handleClick = (ev: any): void => {
 	effectPosition.x = ev.clientX;
 	effectPosition.y = ev.clientY;
 
-	storeUser.addBananasPerClick();
+	userStore.addBananasPerClick();
 
 	soundEffects.playBananaClick();
 
@@ -61,7 +62,7 @@ function clickEffect(e: any) {
 	bananaPlus.classList.add('banana-object');
 	bananaPlus.innerHTML = `
 		<span class="text-sm text-white drop-shadow-lg relative top-[14px] left-[10px]">
-			+${storeUser.user.priceOneClick}
+			+${userStore.user.priceOneClick}
 		</span>
 		<img
 			src="${smallBanana}"

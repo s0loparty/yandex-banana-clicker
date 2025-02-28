@@ -118,9 +118,23 @@ export enum ECurrencyImageSize {
 	SVG = 'svg',
 }
 
+export type LeaderboardEntries = {
+	leaderboard: LeaderboardDescription;
+	ranges: { start: number; size: number }[];
+	userRank: number;
+	entries: LeaderboardEntry[];
+};
+
 export interface Leaderboards {
 	getLeaderboardDescription(leaderboardName: string): Promise<LeaderboardDescription>;
 
+	/**
+	 * Запрос можно отправлять не чаще, чем 1 раз за 1 секунду. В противном случае он будет отклонен с ошибкой
+	 *
+	 * @param leaderboardName Имя лидерборда.
+	 * @param score Значение результата. Принимается только тип integer. Не может быть отрицательным. Если тип лидерборда — time, то значения необходимо передавать в миллисекундах.
+	 * @param extraData Описание пользователя. Необязательный параметр.
+	 */
 	setLeaderboardScore(
 		leaderboardName: string,
 		score: number,
@@ -129,9 +143,16 @@ export interface Leaderboards {
 
 	/**
 	 * @throws {{code: string}}
+	 *
+	 * лимит 60 запросов за 5 минут
 	 */
 	getLeaderboardPlayerEntry(leaderboardName: string): Promise<LeaderboardEntry>;
 
+	/**
+	 * лимит 20 запросов за 5 минут
+	 * @param leaderboardName
+	 * @param opts
+	 */
 	getLeaderboardEntries(
 		leaderboardName: string,
 		opts?: {
@@ -139,12 +160,7 @@ export interface Leaderboards {
 			quantityAround?: number;
 			quantityTop?: number;
 		}
-	): Promise<{
-		leaderboard: LeaderboardDescription;
-		ranges: { start: number; size: number }[];
-		userRank: number;
-		entries: LeaderboardEntry[];
-	}>;
+	): Promise<LeaderboardEntries>;
 }
 
 export interface LeaderboardEntry {
@@ -174,8 +190,8 @@ export interface LeaderboardDescription {
 			options: {
 				decimal_offset: number;
 			};
+			type: 'numeric' | 'time';
 		};
-		type: 'numberic' | 'time';
 	};
 	name: string;
 	title: {
@@ -213,6 +229,29 @@ export interface YandexGamesSDK {
 	features: {
 		LoadingAPI: {
 			ready(): void;
+		};
+		GameplayAPI: {
+			/**
+			 * Метод ysdk.features.GameplayAPI.start() нужно вызывать в случаях, когда игрок начинает или возобновляет игровой процесс:
+				запуск уровня;
+				закрытие меню;
+				снятие с паузы;
+				возобновление игры после показа рекламы;
+				возвращение в текущую вкладку браузера.
+				Убедитесь, после отправки события GameplayAPI.start() игровой процесс сразу запущен
+			*/
+			start(): void;
+
+			/**
+			 * Метод ysdk.features.GameplayAPI.stop() нужно вызывать в случаях, когда игрок приостанавливает или завершает игровой процесс:
+				прохождение уровня или проигрыш;
+				вызов меню;
+				пауза в игре;
+				показ полноэкранной или rewarded-рекламы;
+				уход в другую вкладку браузера.
+				Убедитесь, что после отправки события GameplayAPI.stop() игровой процесс остановлен.
+			 */
+			stop(): void;
 		};
 	};
 
