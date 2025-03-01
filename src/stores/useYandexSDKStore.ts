@@ -61,6 +61,7 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 				console.log('Данные игрока сохранены');
 			} catch (err) {
 				console.error('Ошибка сохранения данных игрока', err);
+				throw `Ошибка сохранения данных игрока: ${err}`;
 			}
 		}
 	};
@@ -75,6 +76,7 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 				return await player.value.getData(keys);
 			} catch (err) {
 				console.error('Ошибка получения данных игрока', err);
+				throw `Ошибка получения данных игрока: ${err}`;
 			}
 		}
 		return null;
@@ -91,6 +93,7 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 				console.log('Статистика игрока сохранена');
 			} catch (err) {
 				console.error('Ошибка сохранения статистики игрока', err);
+				throw `Ошибка сохранения статистики игрока: ${err}`;
 			}
 		}
 	};
@@ -109,6 +112,7 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 				return updatedStats;
 			} catch (err) {
 				console.error('Ошибка обновления статистики игрока', err);
+				throw `Ошибка обновления статистики игрока: ${err}`;
 			}
 		}
 	};
@@ -125,6 +129,7 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 				return await player.value.getStats(keys);
 			} catch (err) {
 				console.error('Ошибка получения статистики игрока', err);
+				throw `Ошибка получения статистики игрока: ${err}`;
 			}
 		}
 		return null;

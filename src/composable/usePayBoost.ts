@@ -21,18 +21,7 @@ const usePayBoost = () => {
 	const handlePay = async (boost: IBoostStore) => {
 		playPayBoost();
 
-		storeUser.$patch((state) => {
-			// отнимает цену буста от общего кол-ва бананов
-			// storeBanana.bananas = storeBanana.bananas - boost.price;
-			state.user.bananas = state.user.bananas - boost.price;
-
-			// добавляем буст к юзеру
-			// добавляем кол-во бананов за 1 клик
-			state.user.priceOneClick = boost.bananas + 1;
-			state.user.boosts.push(boost.id);
-		});
-
-		await storeUser.savePlayerBoost();
+		await storeUser.savePlayerBoost(boost);
 		await storeUser.savePlayerStats();
 	};
 

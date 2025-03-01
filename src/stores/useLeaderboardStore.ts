@@ -1,8 +1,12 @@
 import { LeaderboardEntry, Leaderboards } from '@/types/yandexSDK';
 import { defineStore } from 'pinia';
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useYandexSDKStore } from './useYandexSDKStore';
-import { YANDEX_COUNT_TOP_PLAYERS, YANDEX_LEADERBOARD_NAME } from '@/constants';
+import {
+	BACKGROUNDS,
+	YANDEX_COUNT_TOP_PLAYERS,
+	YANDEX_LEADERBOARD_NAME,
+} from '@/constants';
 import { useUserStore } from './useUserStore';
 
 export const useLeaderboardStore = defineStore('leaderboardStore', () => {
@@ -12,6 +16,12 @@ export const useLeaderboardStore = defineStore('leaderboardStore', () => {
 	const entries = ref<LeaderboardEntry[] | null>(null);
 	const lb = ref<Leaderboards | null>(null);
 
+	const backgroundList = computed(() => {
+		return userStore.user.backgrounds.map((bid) => {
+			return BACKGROUNDS.find((bg) => bg.id === bid)!.class;
+		});
+	});
+
 	const savePlayerInLeaderboard = async () => {
 		// Чтобы проверить доступность метода для пользователя
 		const isOk = await yaStore.ysdk?.isAvailableMethod(
@@ -20,7 +30,16 @@ export const useLeaderboardStore = defineStore('leaderboardStore', () => {
 
 		if (!isOk || !lb.value) return;
 
-		await lb.value.setLeaderboardScore(YANDEX_LEADERBOARD_NAME, userStore.user.bananas);
+		const extraData = JSON.stringify({
+			boosts: userStore.user.boosts.length,
+			backgrounds: backgroundList.value.join(', '),
+		});
+
+		await lb.value.setLeaderboardScore(
+			YANDEX_LEADERBOARD_NAME,
+			userStore.user.bananas,
+			extraData
+		);
 		console.log('[savePlayerInLeaderboard] saved!');
 	};
 
@@ -36,7 +55,22 @@ export const useLeaderboardStore = defineStore('leaderboardStore', () => {
 			quantityTop: YANDEX_COUNT_TOP_PLAYERS,
 		});
 
-		entries.value = result.entries;
+		entries.value = await Promise.all(
+			result.entries.map(async (ent) => {
+				if (!ent.extraData) {
+					const extraDataJson = {
+						boosts: userStore.user.boosts.length,
+						backgrounds: backgroundList.value.join(', '),
+					};
+					return { ...ent, extraData: extraDataJson };
+				}
+
+				const extraDataJson = await JSON.parse(`${ent.extraData}`);
+				return { ...ent, extraData: extraDataJson };
+			})
+		);
+
+		// entries.value = result.entries;
 	};
 
 	// check "yaStore.ysdk"

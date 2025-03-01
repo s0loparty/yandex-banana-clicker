@@ -20,7 +20,7 @@
 							<img
 								v-if="index < 4"
 								:src="rankIcon(index + 1)"
-								class="w-12 h-12"
+								class="w-12 h-12 min-w-max"
 							/>
 							<div
 								v-else
@@ -30,16 +30,26 @@
 								{{ index + 1 }}
 							</div>
 						</div>
-						<div class="text-white font-semibold text-lg">
-							{{
-								entry.player.scopePermissions.public_name === 'not_set'
-									? UNKNOWN_NAME
-									: entry.player.publicName
-							}}
+						<div class="space-y-1">
+							<div class="text-white font-semibold text-lg">
+								{{
+									entry.player.scopePermissions.public_name === 'not_set'
+										? UNKNOWN_NAME
+										: entry.player.publicName
+								}}
+							</div>
+							<div class="flex items-center gap-x-2 flex-wrap">
+								<div class="text-sm text-slate-200">
+									🔥 бустов: {{ entry.extraData?.boosts ?? 0 }} шт.
+								</div>
+								<div class="text-sm text-slate-200">
+									🌈 фоны: {{ entry.extraData?.backgrounds ?? 'default' }}
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="text-yellow-400 text-lg font-semibold">
-						{{ entry.score }} 🍌
+						{{ entry.score }}&nbsp;🍌
 					</div>
 				</li>
 			</ul>
@@ -53,7 +63,7 @@ import Top from '@/assets/icons/top.png';
 import Top1 from '@/assets/icons/top1.png';
 import Top2 from '@/assets/icons/top2.png';
 import Top3 from '@/assets/icons/top3.png';
-import { computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 import PopupAuthorize from '@/components/PopupAuthorize.vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useLeaderboardStore } from '@/stores/useLeaderboardStore';
@@ -61,10 +71,6 @@ import { UNKNOWN_NAME } from '@/constants';
 
 const userStore = useUserStore();
 const lbStore = useLeaderboardStore();
-
-watchEffect(() => {
-	console.log('entries', lbStore.entries);
-});
 
 const rankIcon = computed(() => {
 	return (rank: number) => {

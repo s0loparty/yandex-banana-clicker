@@ -20,10 +20,13 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/useUserStore';
+import { useYandexSDKStore } from '@/stores/useYandexSDKStore';
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { onMounted, onUnmounted, ref } from 'vue';
 
 const userStore = useUserStore();
+const yaStore = useYandexSDKStore();
+
 const isVisible = ref(true);
 let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -33,7 +36,7 @@ const click = () => {
 };
 
 const resetTimer = () => {
-	if (window.innerWidth > 1150) {
+	if (!yaStore.ysdk?.deviceInfo.isMobile()) {
 		return;
 	}
 

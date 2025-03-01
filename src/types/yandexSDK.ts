@@ -165,7 +165,11 @@ export interface Leaderboards {
 
 export interface LeaderboardEntry {
 	score: number;
-	extraData?: string;
+	// extraData?: string;
+	extraData?: {
+		boosts: number;
+		backgrounds: string;
+	};
 	rank: number;
 	player: {
 		getAvatarSrc(size: 'small' | 'medium' | 'large'): string;

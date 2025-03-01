@@ -38,19 +38,27 @@ export const useUserStore = defineStore('userStore', () => {
 		user.bananas = user.bananas - bgItem.price;
 		user.backgrounds.push(backgroundId);
 
-		try {
-			await yaStore.playerSetData({ backgrounds: user.backgrounds }, true);
-			console.log('saveBackground - saved!');
-
-			await savePlayerStats();
-		} catch (error) {
-			console.error('saveBackground', error);
-		}
+		await savePlayerData();
 	};
 
 	const addBananasPerClick = (): void => {
 		user.bananas = user.bananas + user.priceOneClick;
 	};
+
+	async function savePlayerData(): Promise<void> {
+		try {
+			await yaStore.playerSetData(
+				{
+					boosts: [...user.boosts],
+					backgrounds: [...user.backgrounds],
+				},
+				true
+			);
+			console.log('savePlayerData - saved!');
+		} catch (error) {
+			console.error('savePlayerData', error);
+		}
+	}
 
 	async function savePlayerStats(): Promise<void> {
 		try {
@@ -65,13 +73,12 @@ export const useUserStore = defineStore('userStore', () => {
 		}
 	}
 
-	async function savePlayerBoost(): Promise<void> {
-		try {
-			await yaStore.playerSetData({ boosts: [...user.boosts] }, true);
-			console.log('savePlayerBoost - saved!');
-		} catch (error) {
-			console.error('savePlayerBoost', error);
-		}
+	async function savePlayerBoost(boost: IBoostStore): Promise<void> {
+		user.bananas = user.bananas - boost.price;
+		user.priceOneClick = boost.bananas + 1; // добавляем один банан по умолчанию
+		user.boosts.push(boost.id);
+
+		await savePlayerData();
 	}
 
 	const loadUserData = async () => {
@@ -99,6 +106,8 @@ export const useUserStore = defineStore('userStore', () => {
 
 		// BOOSTS
 		const playerGameData = await player.getData(['boosts', 'backgrounds']);
+		console.log('playerGameData', playerGameData);
+
 		if (playerGameData?.boosts) {
 			user.boosts = playerGameData.boosts;
 			console.log('playerGameData boosts', playerGameData.boosts);
