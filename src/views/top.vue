@@ -2,7 +2,7 @@
 	<div class="grow overflow-x-scroll p-2 w-full">
 		<div
 			v-if="!lbStore.entries?.length"
-			class="flex items-center justify-center mt-4 p-4 text-center bg-gray-700 rounded-md text-red-400"
+			class="flex items-center justify-center p-4 text-center bg-gray-700 rounded-md text-red-400"
 		>
 			Топ игроков временно недоступен
 		</div>
