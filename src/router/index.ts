@@ -4,12 +4,15 @@ import IndexView from '@/views/index.vue';
 import BoostsView from '@/views/boosts.vue';
 import TopView from '@/views/top.vue';
 import BackgroundsView from '@/views/backgrounds.vue';
+import CatchView from '@/views/catch.vue';
+
 import { useYandexSDKStore } from '@/stores/useYandexSDKStore';
 
 const routes = [
 	{ path: '/', name: 'main', component: IndexView, meta: { layout: 'Main' } },
 	{ path: '/boosts', name: 'boosts', component: BoostsView, meta: { layout: 'Main' } },
 	{ path: '/top', name: 'top', component: TopView, meta: { layout: 'Main' } },
+	{ path: '/catch', name: 'catch', component: CatchView, meta: { layout: 'Main' } },
 	{
 		path: '/backgrounds',
 		name: 'backgrounds',
