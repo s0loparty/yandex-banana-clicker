@@ -13,13 +13,14 @@
 			</div>
 			<div class="text-gray-200">
 				<div v-if="storeUser.user.username">{{ storeUser.user.username }}</div>
-				<div v-else>unknown player</div>
+				<div v-else>{{ UNKNOWN_NAME }}</div>
 			</div>
 		</div>
 	</header>
 </template>
 
 <script setup lang="ts">
+import { UNKNOWN_NAME } from '@/constants';
 import { useUserStore } from '@/stores/useUserStore';
 import { ref, watch } from 'vue';
 import CountUp from 'vue-countup-v3';
