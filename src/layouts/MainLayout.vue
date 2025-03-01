@@ -3,35 +3,34 @@
 		<div :class="wrapClasses">
 			<TheHeader />
 
-			<section :class="sectionClasses">
+			<section :class="['overflow-x-auto flex grow', sectionClasses]">
 				<RouterView />
 			</section>
 
-			<TheFooter />
+			<TheNavigation />
+
+			<TheNavigationButton />
 		</div>
 	</main>
 </template>
 
 <script lang="ts" setup>
-import TheFooter from '@/components/TheFooter.vue';
+import TheNavigation from '@/components/TheNavigation.vue';
 import TheHeader from '@/components/TheHeader.vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import TheNavigationButton from '@/components/TheNavigationButton.vue';
 
 const route = useRoute();
 
 const wrapClasses = computed(() => {
 	return [
 		{ 'bg-black/40': route.name !== 'main' },
-		'min-h-screen max-h-screen flex flex-col items-center justify-between transition-colors',
+		'min-h-screen max-h-screen flex flex-col items-center transition-colors',
 	];
 });
 
-const sectionClasses = computed(() => {
-	return [
-		route.name === 'main'
-			? 'overflow-x-auto w-max flex'
-			: 'overflow-x-auto w-full flex grow',
-	];
-});
+const sectionClasses = computed(() =>
+	route.name === 'main' ? 'w-max items-center' : 'w-full'
+);
 </script>

@@ -4,15 +4,19 @@
 			<div
 				v-for="background in BACKGROUNDS"
 				:key="background.id"
-				class="rounded-md relative"
+				class="rounded-md relative group"
 			>
 				<img
 					:src="background.source"
 					class="object-cover w-full rounded-md h-64 sm:min-h-[360px]"
 				/>
 				<div class="absolute inset-0 flex items-end justify-end">
-					<div class="bg-black/80 p-2 rounded-md w-full">
-						<p class="text-white text-sm sm:text-base">
+					<div
+						class="bg-black/80 p-2 rounded-md w-full group-hover:bg-transparent transition-colors duration-500"
+					>
+						<p
+							class="text-white text-sm sm:text-base group-hover:opacity-0 transition-opacity duration-500"
+						>
 							{{ background.description }}
 						</p>
 

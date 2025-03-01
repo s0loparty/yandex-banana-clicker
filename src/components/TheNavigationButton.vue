@@ -1,0 +1,27 @@
+<template>
+	<button
+		class="fixed p-4 sm:py-2 sm:px-3 flex items-center gap-x-2 rounded-full bottom-2 right-2 sm:bottom-10 sm:right-10 sm:bg-black/70 shadow-[0_0_5px] bg-yellow-400/80"
+		@click="click"
+	>
+		<div>
+			<XMarkIcon
+				v-show="userStore.showNavigation"
+				class="size-6 sm:size-8 stroke-black sm:stroke-white"
+			/>
+			<Bars3Icon
+				v-show="!userStore.showNavigation"
+				class="size-6 sm:size-8 stroke-black sm:stroke-white"
+			/>
+		</div>
+		<span class="hidden sm:block text-xl uppercase text-white">меню</span>
+	</button>
+</template>
+
+<script setup lang="ts">
+import { useUserStore } from '@/stores/useUserStore';
+import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline';
+
+const userStore = useUserStore();
+
+const click = () => userStore.toggleNavigation();
+</script>

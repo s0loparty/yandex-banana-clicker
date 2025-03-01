@@ -19,9 +19,18 @@ export const useUserStore = defineStore('userStore', () => {
 	const saveTimeout = ref<NodeJS.Timeout | null>(null);
 
 	const soundEffects = ref(true);
+	const showNavigation = ref(true);
 
 	const yaStore = useYandexSDKStore();
 	const leaderboardStore = useLeaderboardStore();
+
+	const toggleNavigation = (isActive?: boolean) => {
+		if (isActive) {
+			showNavigation.value = isActive;
+		} else {
+			showNavigation.value = !showNavigation.value;
+		}
+	};
 
 	const saveBackground = async (backgroundId: number) => {
 		const bgItem = BACKGROUNDS.find((i) => i.id === backgroundId)!;
@@ -144,7 +153,11 @@ export const useUserStore = defineStore('userStore', () => {
 	return {
 		user,
 		soundEffects,
+		showNavigation,
+
+		toggleNavigation,
 		addBananasPerClick,
+
 		savePlayerBoost,
 		savePlayerStats,
 		saveBackground,

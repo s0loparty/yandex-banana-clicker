@@ -15,6 +15,7 @@
 	},
 	"dependencies": {
 		"@animxyz/vue3": "^0.6.7",
+		"@heroicons/vue": "^2.2.0",
 		"canvas-confetti": "^1.9.3",
 		"firebase": "^11.3.1",
 		"pinia": "^2.1.7",
