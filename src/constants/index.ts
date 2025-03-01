@@ -2,6 +2,7 @@ import BGDefault from '@/assets/backgrounds/default.webp';
 import BGSpace from '@/assets/backgrounds/space.webp';
 import BGJungle from '@/assets/backgrounds/jungle.webp';
 import BGUnderground from '@/assets/backgrounds/underground.webp';
+import BGMinecraft from '@/assets/backgrounds/minecraft.webp';
 
 export const FIREBASE_DB_PATH = 'yandex-banana-clicker-top';
 export const YANDEX_COUNT_TOP_PLAYERS = 50;
@@ -150,7 +151,7 @@ export const BACKGROUNDS = [
 	},
 	{
 		id: 2,
-		price: 0,
+		price: 1500,
 		class: 'space',
 		description:
 			'Космический банановый шторм: глубокий космос, наполненный светящимися бананами, парящими среди далёких галактик 🍌✨',
@@ -158,7 +159,7 @@ export const BACKGROUNDS = [
 	},
 	{
 		id: 3,
-		price: 0,
+		price: 6000,
 		class: 'jungle',
 		description:
 			'Мягкий солнечный свет пробивается сквозь листву, создавая уютную атмосферу. Передаёт дух приключений в мире банана-кликера! 🍌🌿',
@@ -166,7 +167,15 @@ export const BACKGROUNDS = [
 	},
 	{
 		id: 4,
-		price: 0,
+		price: 10000,
+		class: 'minecraft',
+		description:
+			'Пиксельные места перенесут тебя в знакомое пространство. Идеальное место для сбора бананов! 🟨🟩',
+		source: BGMinecraft,
+	},
+	{
+		id: 5,
+		price: 13000,
 		class: 'underground',
 		description:
 			'Подземелье бананового короля: таинственные каменные стены, слабо освещённые факелами, а повсюду разбросаны золотистые бананы, хранящие древние секреты 🍌🔥🔮',

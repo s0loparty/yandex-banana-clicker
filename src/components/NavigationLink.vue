@@ -9,10 +9,16 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{ path: string }>();
-const router = useRouter();
 
-const goToPage = () => router.push(props.path);
+const router = useRouter();
+const userStore = useUserStore();
+
+const goToPage = () => {
+	userStore.toggleNavigation(false);
+	router.push(props.path);
+};
 </script>
