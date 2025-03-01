@@ -31,7 +31,11 @@
 							</div>
 						</div>
 						<div class="text-white font-semibold text-lg">
-							{{ entry.player.publicName }}
+							{{
+								entry.player.scopePermissions.public_name === 'not_set'
+									? UNKNOWN_NAME
+									: entry.player.publicName
+							}}
 						</div>
 					</div>
 					<div class="text-yellow-400 text-lg font-semibold">
@@ -53,6 +57,7 @@ import { computed, watchEffect } from 'vue';
 import PopupAuthorize from '@/components/PopupAuthorize.vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useLeaderboardStore } from '@/stores/useLeaderboardStore';
+import { UNKNOWN_NAME } from '@/constants';
 
 const userStore = useUserStore();
 const lbStore = useLeaderboardStore();

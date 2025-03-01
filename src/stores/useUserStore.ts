@@ -30,7 +30,7 @@ export const useUserStore = defineStore('userStore', () => {
 		user.backgrounds.push(backgroundId);
 
 		try {
-			await yaStore.playerSetData({ backgrounds: user.backgrounds });
+			await yaStore.playerSetData({ backgrounds: user.backgrounds }, true);
 			console.log('saveBackground - saved!');
 
 			await savePlayerStats();

@@ -11,6 +11,7 @@ export const UNKNOWN_NAME = 'неизвестный игрок';
 
 export const BOOSTS: IBoostStore[] = [
 	{
+		id: 1,
 		price: 100,
 		label: 'Бумеранг банана',
 		icon: '🍌',
@@ -19,6 +20,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Твой клик как бумеранг, возвращается к тебе',
 	},
 	{
+		id: 2,
 		price: 500,
 		label: 'Суперспринт',
 		icon: '🏃',
@@ -27,6 +29,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Ты уже встал на дорожку с которой не сойти',
 	},
 	{
+		id: 3,
 		price: 800,
 		label: 'Взрыв банана',
 		icon: '💥',
@@ -35,6 +38,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Твои клики РАЗРЫВАЮТ всю банановую тусовку',
 	},
 	{
+		id: 4,
 		price: 1200,
 		label: 'Невидимый банан',
 		icon: '👀',
@@ -43,6 +47,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Ты их не видишь, а они есть',
 	},
 	{
+		id: 5,
 		price: 1500,
 		label: 'Банан + Миньоны',
 		icon: '🤪',
@@ -51,6 +56,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Маленькие злодеи охотятся за бананами вместе с тобой',
 	},
 	{
+		id: 6,
 		price: 1900,
 		label: 'Банановый щит',
 		icon: '🛡️',
@@ -59,6 +65,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Твоими бананами можно защищать детей, женщин и стариков',
 	},
 	{
+		id: 7,
 		price: 2500,
 		label: 'Клонирование бананов',
 		icon: '🍌🍌🍌',
@@ -67,6 +74,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Банановый банан Банановый банан Банановый банан',
 	},
 	{
+		id: 8,
 		price: 4000,
 		label: 'Шокирующий банан',
 		icon: '⚡️',
@@ -75,6 +83,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'ШОК КОНТЕНТ!!! Бананов ещё больше!',
 	},
 	{
+		id: 9,
 		price: 7000,
 		label: 'Телепортация банана',
 		icon: '🌀',
@@ -83,6 +92,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Банан там, банан тут, банан вон там и вот здесь и ещё один вооон там',
 	},
 	{
+		id: 10,
 		price: 10000,
 		label: 'Вихрь бананов',
 		icon: '🌪️',
@@ -91,6 +101,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Кому-то бананы вскружили голову??)))',
 	},
 	{
+		id: 11,
 		price: 15000,
 		label: 'Турбобананы',
 		icon: '🔥🔥🔥',
@@ -99,6 +110,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Ты как Вин Дизель — бананы твоя семья',
 	},
 	{
+		id: 12,
 		price: 50000,
 		label: 'Банановая мощь',
 		icon: '🦾',
@@ -107,6 +119,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Дуэйн (Банан) Джонсон - нерушимая скала из бананов',
 	},
 	{
+		id: 13,
 		price: 100000,
 		label: 'Банан Зевса',
 		icon: '🍌',
@@ -115,6 +128,7 @@ export const BOOSTS: IBoostStore[] = [
 		description: 'Зевс ультует',
 	},
 	{
+		id: 14,
 		price: 500000,
 		label: 'Банановый Дзен',
 		icon: '💫',

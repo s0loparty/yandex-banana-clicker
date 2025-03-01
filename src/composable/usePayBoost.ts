@@ -9,7 +9,7 @@ const usePayBoost = () => {
 	const { playPayBoost } = useSoundEffects();
 
 	const isBoostPayed = (boost: IBoostStore): boolean => {
-		return !!storeUser.user.boosts.find((price) => price === boost.price);
+		return !!storeUser.user.boosts.find((id) => id === boost.id);
 	};
 
 	const canBuyBoost = computed(() => {
@@ -29,7 +29,7 @@ const usePayBoost = () => {
 			// добавляем буст к юзеру
 			// добавляем кол-во бананов за 1 клик
 			state.user.priceOneClick = boost.bananas + 1;
-			state.user.boosts.push(boost.price);
+			state.user.boosts.push(boost.id);
 		});
 
 		await storeUser.savePlayerBoost();

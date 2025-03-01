@@ -9,6 +9,7 @@ interface IUserStore {
 }
 
 interface IBoostStore {
+	id: number;
 	price: number;
 	label: string;
 	icon: string;
