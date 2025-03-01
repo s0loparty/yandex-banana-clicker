@@ -8,7 +8,7 @@
 			>
 				<img
 					:src="background.source"
-					class="object-cover w-full rounded-md h-64 sm:min-h-[388px]"
+					class="object-cover w-full rounded-md h-64 sm:min-h-[360px]"
 				/>
 				<div class="absolute inset-0 flex items-end justify-end">
 					<div class="bg-black/80 p-2 rounded-md w-full">
@@ -33,7 +33,7 @@
 						<!-- если фон не куплен -->
 						<button
 							v-else
-							class="px-4 py-1 rounded text-black bg-yellow-300 mt-2 disabled:bg-slate-700 disabled:text-black"
+							class="px-4 py-1 rounded text-white bg-green-600 mt-2 disabled:bg-green-900 disabled:text-white/50"
 							:disabled="notCanPayBackgroundByPrice(background.price)"
 							@click="payBackground(background.id)"
 						>

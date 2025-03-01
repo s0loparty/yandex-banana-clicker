@@ -45,8 +45,8 @@
 					<CirclePing v-show="bananas >= boost.price" />
 					<button
 						:class="[
-							'px-4 py-1 rounded text-black',
-							bananas < boost.price ? 'bg-slate-700' : 'bg-yellow-300',
+							'px-4 py-1 rounded text-white',
+							bananas < boost.price ? 'bg-slate-700' : 'bg-green-600',
 						]"
 						:disabled="bananas < boost.price"
 						@click="handlePayBoost(boost)"
