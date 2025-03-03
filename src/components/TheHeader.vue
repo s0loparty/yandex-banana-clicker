@@ -1,5 +1,8 @@
 <template>
-	<header class="w-full bg-slate-700 shadow-md rounded-b-md">
+	<header
+		id="header"
+		class="w-full bg-slate-700 shadow-md rounded-b-md"
+	>
 		<div class="flex items-center justify-between gap-4 py-2 px-4">
 			<div class="flex flex-col">
 				<div class="flex items-center gap-2 text-orange-300 font-bold">

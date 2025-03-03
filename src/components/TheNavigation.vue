@@ -1,5 +1,6 @@
 <template>
 	<nav
+		id="navigation"
 		:class="[
 			'w-max bg-slate-700 rounded-l-md fixed top-1/2 -translate-y-1/2 transition-all ease-in-out',
 			wrapRight,

@@ -1,7 +1,7 @@
 import { useUserStore } from '@/stores/useUserStore';
 import useSoundEffects from '@/composable/useSoundEffects';
 import { computed } from 'vue';
-import { BOOSTS } from '@/constants';
+import { BOOSTS } from '@/constants/boosts';
 
 const usePayBoost = () => {
 	const storeUser = useUserStore();

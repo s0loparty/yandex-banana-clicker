@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import useConfetti from '@/composable/useConfetti';
 import usePayBackground from '@/composable/usePayBackground';
-import { BACKGROUNDS } from '@/constants';
+import { BACKGROUNDS } from '@/constants/backgrounds';
 import { useUserStore } from '@/stores/useUserStore';
 import { storeToRefs } from 'pinia';
 

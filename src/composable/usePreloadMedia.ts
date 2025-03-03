@@ -1,4 +1,4 @@
-import { BACKGROUNDS } from '@/constants';
+import { BACKGROUNDS } from '@/constants/backgrounds';
 
 import soundClick from '@/assets/sounds/click.mp3';
 import soundBoost from '@/assets/sounds/boost.mp3';

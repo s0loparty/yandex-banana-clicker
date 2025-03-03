@@ -66,7 +66,7 @@ import usePayBoost from '@/composable/usePayBoost';
 import useConfetti from '@/composable/useConfetti';
 import useAdvStore from '@/stores/useAdvStore';
 import CirclePing from '@/components/ui/CirclePing.vue';
-import { BOOSTS } from '@/constants';
+import { BOOSTS } from '@/constants/boosts';
 
 const storeUser = useUserStore();
 

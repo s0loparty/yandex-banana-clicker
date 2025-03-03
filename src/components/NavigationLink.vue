@@ -1,6 +1,6 @@
 <template>
 	<button
-		class="rounded block text-gray-300 bg-slate-600 px-3 py-1 shadow-md border border-transparent text-center focus:outline-none active:outline-none"
+		class="w-full rounded block text-gray-300 bg-slate-600 px-3 text-left py-1 shadow-md border border-transparent focus:outline-none active:outline-none"
 		draggable="false"
 		@click.prevent="goToPage"
 	>

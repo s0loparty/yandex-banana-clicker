@@ -2,12 +2,9 @@ import { LeaderboardEntry, Leaderboards } from '@/types/yandexSDK';
 import { defineStore } from 'pinia';
 import { computed, ref, watchEffect } from 'vue';
 import { useYandexSDKStore } from './useYandexSDKStore';
-import {
-	BACKGROUNDS,
-	YANDEX_COUNT_TOP_PLAYERS,
-	YANDEX_LEADERBOARD_NAME,
-} from '@/constants';
+import { YANDEX_COUNT_TOP_PLAYERS, YANDEX_LEADERBOARD_NAME } from '@/constants';
 import { useUserStore } from './useUserStore';
+import { BACKGROUNDS } from '@/constants/backgrounds';
 
 export const useLeaderboardStore = defineStore('leaderboardStore', () => {
 	const yaStore = useYandexSDKStore();

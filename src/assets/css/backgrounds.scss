@@ -22,40 +22,159 @@
 	}
 }
 
-#background.space {
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+body.space {
+	--bg-color: #9f4e7d;
+	--btn-bg-color: #65365b;
+
+	#background {
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+	}
+
+	#header {
+		background-color: var(--bg-color);
+		opacity: 0.9;
+	}
+
+	#navigation {
+		background-color: var(--bg-color);
+		opacity: 0.95;
+
+		button {
+			background-color: var(--btn-bg-color);
+		}
+	}
 }
 
-#background.jungle {
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+body.jungle {
+	--bg-color: #78452de8;
+	--btn-bg-color: #5b361c;
+
+	#background {
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+	}
+
+	#header {
+		background-color: var(--bg-color);
+	}
+
+	#navigation {
+		background-color: var(--bg-color);
+
+		button {
+			background-color: var(--btn-bg-color);
+		}
+	}
 }
 
-#background.underground {
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+body.underground {
+	--bg-color: #2f3a3d;
+	--btn-bg-color: #192121;
+
+	#background {
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+	}
+
+	#header {
+		background-color: var(--bg-color);
+		opacity: 0.9;
+	}
+
+	#navigation {
+		background-color: var(--bg-color);
+		opacity: 0.9;
+
+		button {
+			background-color: var(--btn-bg-color);
+		}
+	}
 }
 
-#background.minecraft {
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+body.minecraft {
+	--bg-color: #458c22;
+	--btn-bg-color: #1a5f10;
+
+	#background {
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+	}
+
+	#header {
+		position: fixed;
+		bottom: 0;
+
+		padding-top: 5px;
+
+		background-color: transparent;
+		background-image: url('/images/minecraft-block.jpg');
+		background-size: contain;
+	}
+
+	#navigation {
+		background-color: var(--bg-color);
+
+		button {
+			background-color: var(--btn-bg-color);
+		}
+	}
+}
+
+body.detective {
+	--bg-color: #282626;
+	--btn-bg-color: #3d3d3d;
+
+	#background {
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+
+		@media screen and (max-width:930px) {
+			background-position: 60% center;
+		}
+	}
+
+	#banana,
+	#banana-plus {
+		filter: grayscale(0.8);
+	}
+
+	#header {
+		background-color: var(--bg-color);
+	}
+
+	#navigation {
+		background-color: var(--bg-color);
+
+		button {
+			background-color: var(--btn-bg-color);
+		}
+	}
 }
 
 @keyframes backgroundMove {
 	0% {
-		background-position: left center;
+		background-position: 60% center;
+	}
+
+	25% {
+		background-position: 80% center;
 	}
 
 	50% {
-		background-position: right center;
+		background-position: 60% center;
+	}
+
+	75% {
+		background-position: 50% center;
 	}
 
 	100% {
-		background-position: left center;
+		background-position: 60% center;
 	}
 }

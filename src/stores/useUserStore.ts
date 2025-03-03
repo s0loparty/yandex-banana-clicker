@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
 import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
-import { BACKGROUNDS, UNKNOWN_NAME } from '@/constants';
+import { UNKNOWN_NAME } from '@/constants';
 import { useYandexSDKStore } from './useYandexSDKStore';
 import { useLeaderboardStore } from './useLeaderboardStore';
+import { BACKGROUNDS } from '@/constants/backgrounds';
 
 export const useUserStore = defineStore('userStore', () => {
 	const user = reactive<IUserStore>({
@@ -10,7 +11,7 @@ export const useUserStore = defineStore('userStore', () => {
 		username: UNKNOWN_NAME,
 		boosts: [],
 		priceOneClick: 1,
-		bananas: 0,
+		bananas: 10000,
 		backgrounds: [BACKGROUNDS[0].id],
 		currentBackgroundId: BACKGROUNDS[0].id,
 	});

@@ -1,7 +1,7 @@
 import { computed } from 'vue';
 import { useUserStore } from '@/stores/useUserStore';
 import useSoundEffects from './useSoundEffects';
-import { BACKGROUNDS } from '@/constants';
+import { BACKGROUNDS } from '@/constants/backgrounds';
 
 const usePayBackground = () => {
 	const userStore = useUserStore();
@@ -53,3 +53,4 @@ const usePayBackground = () => {
 };
 
 export default usePayBackground;
+

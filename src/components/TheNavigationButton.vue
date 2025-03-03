@@ -1,7 +1,7 @@
 <template>
 	<button
 		v-show="isVisible"
-		class="z-50 transition-all fixed p-4 sm:py-2 sm:px-3 flex items-center gap-x-2 rounded-full bottom-2 right-2 sm:bottom-10 sm:right-10 sm:bg-black/70 shadow-[0_0_5px] bg-yellow-400/80"
+		class="z-50 transition-all fixed p-4 sm:py-2 sm:px-3 flex items-center gap-x-2 rounded-full bottom-12 right-2 sm:bottom-12 sm:right-10 sm:bg-black/70 shadow-[0_0_5px] bg-yellow-400/80"
 		@click="click"
 	>
 		<div>

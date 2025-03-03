@@ -2,12 +2,12 @@
 	<div
 		ref="backgroundRef"
 		id="background"
-		class="default transition-all"
+		class="transition-all"
 	></div>
 </template>
 
 <script setup lang="ts">
-import { BACKGROUNDS } from '@/constants';
+import { BACKGROUNDS } from '@/constants/backgrounds';
 import { useUserStore } from '@/stores/useUserStore';
 import { onMounted, useTemplateRef, watch } from 'vue';
 
@@ -25,8 +25,10 @@ const changeBackgroundById = (id: number) => {
 	BACKGROUNDS.forEach((bg) => {
 		if (bg.id === id) {
 			backgroundRef.value!.classList.add(background.class);
+			document.body.classList.add(background.class);
 		} else {
 			backgroundRef.value!.classList.remove(bg.class);
+			document.body.classList.remove(bg.class);
 		}
 	});
 };
