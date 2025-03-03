@@ -20,6 +20,8 @@
 			></div>
 		</XyzTransition>
 	</main>
+
+	<TheAlertRewardedVideo />
 </template>
 
 <script setup lang="ts">
@@ -30,6 +32,7 @@ import imageBanana from '@/assets/images/banana.png';
 import imageBananaMinecraft from '@/assets/images/banana-minecraft.png';
 import smallBanana from '@/assets/images/small-banana.png';
 import { BACKGROUNDS } from '@/constants/backgrounds';
+import TheAlertRewardedVideo from '@/components/TheAlertRewardedVideo.vue';
 
 const userStore = useUserStore();
 const soundEffects = useSoundEffects();
