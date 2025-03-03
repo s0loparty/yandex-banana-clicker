@@ -22,6 +22,7 @@
 				<CirclePing v-if="canBuyBackground" />
 				🌈 ФОНЫ
 			</NavigationLink>
+			<NavigationLink path="/catch"> 🐵 ЛОВЛЯ </NavigationLink>
 			<NavigationLink path="/top"> ⭐ ТОП </NavigationLink>
 
 			<ButtonSoundEffects />

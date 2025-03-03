@@ -5,6 +5,78 @@
 		:style="{ backgroundImage: `url(${CatchBananasBg})` }"
 		@mousemove="handleMouseMove"
 	>
+		<!-- start  popup -->
+		<div
+			v-show="isShowStartPopup"
+			class="absolute inset-0 w-full h-full bg-black/80 z-50"
+		>
+			<div
+				class="absolute space-y-5 left-1/2 -translate-x-1/2 top-1/4 w-[80%] sm:w-[60%] p-4 sm:p-6 rounded-xl bg-slate-700 shadow-black/80 shadow-[0_0_5px]"
+			>
+				<div>
+					<div class="uppercase text-center text-white font-bold text-xl">
+						{{ TIMER_FOR_GAME_IN_SECONDS }} секунд на ловлю бананов
+					</div>
+					<p class="text-base text-center text-gray-300">
+						Двигай мартышку влево/вправо и хватай бананы!
+					</p>
+				</div>
+
+				<p class="text-base text-center text-orange-400">
+					Из-за пропуска бананов счёт может уйти в минус! <br />
+					Будьте быстры как ветер!
+				</p>
+
+				<div>
+					<div class="text-green-600 text-center text-lg">
+						Поймал банан +{{ INCREMENT_FOR_ONE_BANANA }} 🍌
+					</div>
+					<div class="text-red-600 text-center text-lg">
+						Пропустил банан -{{ DECREMENT_FOR_ONE_BANANA }} 🍌
+					</div>
+				</div>
+
+				<button
+					class="bg-yellow-600 text-white rounded-md px-4 py-2 block mx-auto"
+					@click="startGame"
+				>
+					ПОГНАЛИ
+				</button>
+			</div>
+		</div>
+
+		<!-- finish popup -->
+		<div
+			v-show="isShowFinishPopup"
+			class="absolute inset-0 w-full h-full bg-black/80 z-50"
+		>
+			<div
+				class="absolute space-y-5 left-1/2 -translate-x-1/2 top-1/4 w-[80%] sm:w-1/2 p-4 sm:p-6 rounded-xl bg-slate-700 shadow-black/80 shadow-[0_0_5px]"
+			>
+				<div class="uppercase text-white text-xl font-bold text-center">
+					Конец игры
+				</div>
+				<div class="text-lg text-center">
+					<div class="text-green-600">Мартышка поймала {{ caughtBananas }} 🍌</div>
+					<div class="text-yellow-500">За это вы получаете {{ score }} 🍌</div>
+				</div>
+				<button
+					class="bg-yellow-600 text-white rounded-md px-4 py-2 block mx-auto"
+					@click="handleFinishGame"
+				>
+					СУПЕР
+				</button>
+			</div>
+		</div>
+
+		<!-- game timer -->
+		<div
+			v-show="!isShowStartPopup"
+			class="absolute top-[5%] left-1/2 -translate-x-1/2 text-[70px] text-yellow-500/80 shadow-md font-extrabold"
+		>
+			{{ timerGameInSeconds }}
+		</div>
+
 		<!-- Корзинка (игрок) -->
 		<div
 			class="absolute -bottom-4 h-[90px] w-[100px] rounded-t-md flex items-center justify-center transition-transform duration-75 ease-linear"
@@ -47,18 +119,6 @@
 		<div class="absolute top-0 left-0 m-2 p-2 bg-white shadow rounded">
 			<p>Счёт: {{ score }}</p>
 			<p>Поймано бананов: {{ caughtBananas }}</p>
-			<button
-				@click="startGame"
-				class="px-4 py-2 bg-green-400 rounded mr-2"
-			>
-				Старт
-			</button>
-			<button
-				@click="stopGame"
-				class="px-4 py-2 bg-red-400 rounded"
-			>
-				Стоп
-			</button>
 		</div>
 	</div>
 </template>
@@ -70,6 +130,7 @@ import Monkey from '@/assets/images/monkey.webp';
 import SoundNyam from '@/assets/sounds/nyam.mp3';
 import CatchBananasBg from '@/assets/images/catch-bananas.webp';
 import { useUserStore } from '@/stores/useUserStore';
+import { useRouter } from 'vue-router';
 
 interface Banana {
 	id: number;
@@ -78,8 +139,22 @@ interface Banana {
 	speed: number; // Скорость падения
 }
 
+const router = useRouter();
 const userStore = useUserStore();
 const gameArea = useTemplateRef('gameArea');
+
+// сколько добавлять бананов за 1 пойманный банан
+const INCREMENT_FOR_ONE_BANANA = 10;
+// сколько отнимать бананов за 1 пропущенный банан
+const DECREMENT_FOR_ONE_BANANA = 20;
+// таймер игры
+const TIMER_FOR_GAME_IN_SECONDS = 30;
+
+const timerGameInSeconds = ref(TIMER_FOR_GAME_IN_SECONDS);
+const timerGameId = ref<ReturnType<typeof setInterval>>();
+
+const isShowStartPopup = ref(true);
+const isShowFinishPopup = ref(false);
 
 // Позиция игрока (корзинки) по оси X
 const playerX = ref(200);
@@ -119,7 +194,7 @@ function updateBananas() {
 		// Если банан за нижней границей, штраф или просто удаляем
 		if (banana.y > gameHeight.value) {
 			// к примеру, штраф за пропуск
-			score.value -= 20;
+			score.value -= DECREMENT_FOR_ONE_BANANA;
 			return false;
 		}
 		return true;
@@ -154,7 +229,7 @@ function checkCollisions() {
 		) {
 			// Считаем банан пойманным
 			caughtBananas.value++;
-			score.value += 10; // добавим очки
+			score.value += INCREMENT_FOR_ONE_BANANA; // добавим очки
 			// Удаляем его из массива
 			bananas.value = bananas.value.filter((b) => b.id !== banana.id);
 
@@ -182,6 +257,20 @@ function maybeSpawnBanana() {
 
 // Запуск анимации
 function startGame() {
+	isShowStartPopup.value = false;
+
+	timerGameId.value = setInterval(() => {
+		if (timerGameInSeconds.value === 0) {
+			clearInterval(timerGameId.value);
+			stopGame();
+
+			isShowFinishPopup.value = true;
+			return;
+		}
+
+		timerGameInSeconds.value = timerGameInSeconds.value - 1;
+	}, 1000);
+
 	// Очищаем прошлые данные
 	bananas.value = [];
 	score.value = 0;
@@ -206,7 +295,7 @@ function gameLoop() {
 
 // Управление корзинкой (мышь)
 function handleMouseMove(e: MouseEvent) {
-	if (!gameArea.value) return;
+	if (!gameArea.value || isShowStartPopup.value || isShowFinishPopup.value) return;
 	const rect = gameArea.value.getBoundingClientRect();
 	const mouseX = e.clientX - rect.left;
 	playerX.value = Math.max(
@@ -225,11 +314,22 @@ function handleKeyDown(e: KeyboardEvent) {
 	}
 }
 
+const saveBanans = () => {
+	userStore.user.bananas += score.value;
+};
+
+const handleFinishGame = () => {
+	saveBanans();
+	router.push('/');
+};
+
 onMounted(() => {
 	document.addEventListener('keydown', handleKeyDown);
 });
 
 onBeforeUnmount(() => {
+	saveBanans();
+
 	document.removeEventListener('keydown', handleKeyDown);
 	cancelAnimationFrame(animationFrameId.value);
 });
