@@ -124,13 +124,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, useTemplateRef, computed } from 'vue';
+import {
+	ref,
+	onMounted,
+	onBeforeUnmount,
+	useTemplateRef,
+	computed,
+	watchEffect,
+} from 'vue';
 import SmallBanana from '@/assets/images/small-banana.png';
 import Monkey from '@/assets/images/monkey.webp';
 import SoundNyam from '@/assets/sounds/nyam.mp3';
 import CatchBananasBg from '@/assets/images/catch-bananas.webp';
 import { useUserStore } from '@/stores/useUserStore';
 import { useRouter } from 'vue-router';
+import { useYandexSDKStore } from '@/stores/useYandexSDKStore';
 
 interface Banana {
 	id: number;
@@ -141,6 +149,7 @@ interface Banana {
 
 const router = useRouter();
 const userStore = useUserStore();
+const yaStore = useYandexSDKStore();
 const gameArea = useTemplateRef('gameArea');
 
 // сколько добавлять бананов за 1 пойманный банан
@@ -155,6 +164,10 @@ const timerGameId = ref<ReturnType<typeof setInterval>>();
 
 const isShowStartPopup = ref(true);
 const isShowFinishPopup = ref(false);
+
+const isLive = computed(() => {
+	return isShowStartPopup.value === false && isShowFinishPopup.value === false;
+});
 
 // Позиция игрока (корзинки) по оси X
 const playerX = ref(200);
@@ -322,6 +335,14 @@ const handleFinishGame = () => {
 	saveBanans();
 	router.push('/');
 };
+
+watchEffect(() => {
+	if (isLive.value) {
+		yaStore.ysdk?.features.GameplayAPI.start();
+	} else {
+		yaStore.ysdk?.features.GameplayAPI.stop();
+	}
+});
 
 onMounted(() => {
 	document.addEventListener('keydown', handleKeyDown);
