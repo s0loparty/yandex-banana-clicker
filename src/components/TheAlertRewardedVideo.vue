@@ -30,7 +30,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 const userStore = useUserStore();
 const yaStore = useYandexSDKStore();
 
-const isShowAlert = ref(true);
+const isShowAlert = ref(false);
 const interval = ref<ReturnType<typeof setInterval>>();
 
 // бонус в бананах

@@ -3,7 +3,7 @@
 		<div :class="wrapClasses">
 			<TheHeader />
 
-			<section :class="['overflow-x-auto flex grow', sectionClasses]">
+			<section :class="['flex grow', sectionClasses]">
 				<RouterView />
 			</section>
 

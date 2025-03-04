@@ -19,6 +19,8 @@
 		"@heroicons/vue": "^2.2.0",
 		"canvas-confetti": "^1.9.3",
 		"firebase": "^11.3.1",
+		"gsap": "^3.12.7",
+		"howler": "^2.2.4",
 		"pinia": "^2.1.7",
 		"uuid": "^10.0.0",
 		"vue": "^3.5.13",
@@ -27,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@types/canvas-confetti": "^1.9.0",
+		"@types/howler": "^2.2.12",
 		"@types/node": "^20.14.8",
 		"@types/telegram-web-app": "^7.10.1",
 		"@types/uuid": "^10.0.0",

@@ -10,7 +10,10 @@
 			v-else
 			class="w-full"
 		>
-			<ul class="w-full flex flex-col gap-y-2">
+			<ul
+				id="top-list"
+				class="w-full flex flex-col gap-y-2"
+			>
 				<li
 					v-for="(entry, index) in lbStore.entries"
 					:class="itemClasses(entry.player.uniqueID)"
@@ -49,7 +52,12 @@
 						</div>
 					</div>
 					<div class="text-yellow-400 text-lg font-semibold">
-						{{ entry.score }}&nbsp;🍌
+						<CountUp
+							:start-value="0"
+							:end-val="entry.score"
+							:duration="0.8"
+							:options="{ suffix: ' 🍌' }"
+						/>
 					</div>
 				</li>
 			</ul>
@@ -68,6 +76,7 @@ import PopupAuthorize from '@/components/PopupAuthorize.vue';
 import { useUserStore } from '@/stores/useUserStore';
 import { useLeaderboardStore } from '@/stores/useLeaderboardStore';
 import { UNKNOWN_NAME } from '@/constants';
+import CountUp from 'vue-countup-v3';
 
 const userStore = useUserStore();
 const lbStore = useLeaderboardStore();

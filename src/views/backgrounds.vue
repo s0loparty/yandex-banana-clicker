@@ -54,16 +54,21 @@
 import useConfetti from '@/composable/useConfetti';
 import usePayBackground from '@/composable/usePayBackground';
 import { BACKGROUNDS } from '@/constants/backgrounds';
+import useAdvStore from '@/stores/useAdvStore';
 import { useUserStore } from '@/stores/useUserStore';
 import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 
 const { user } = storeToRefs(useUserStore());
 const { handlePay, notCanPayBackgroundByPrice, payed, setBackground } =
 	usePayBackground();
 const { backgroundsEffect } = useConfetti();
+const { showFullscreenAdv } = useAdvStore();
 
 const payBackground = (id: number) => {
 	handlePay(id);
 	backgroundsEffect();
 };
+
+onMounted(showFullscreenAdv);
 </script>

@@ -25,6 +25,7 @@
 body.space {
 	--bg-color: #9f4e7d;
 	--btn-bg-color: #65365b;
+	--top-bg-color: #2a2746;
 
 	#background {
 		background-repeat: no-repeat;
@@ -45,11 +46,16 @@ body.space {
 			background-color: var(--btn-bg-color);
 		}
 	}
+
+	#top-list>li {
+		background-color: var(--top-bg-color);
+	}
 }
 
 body.jungle {
 	--bg-color: #78452de8;
 	--btn-bg-color: #5b361c;
+	--top-bg-color: #30560a;
 
 	#background {
 		background-repeat: no-repeat;
@@ -67,12 +73,17 @@ body.jungle {
 		button {
 			background-color: var(--btn-bg-color);
 		}
+	}
+
+	#top-list>li {
+		background-color: var(--top-bg-color);
 	}
 }
 
 body.underground {
 	--bg-color: #2f3a3d;
 	--btn-bg-color: #192121;
+	--top-bg-color: #2f3a3d;
 
 	#background {
 		background-repeat: no-repeat;
@@ -93,11 +104,16 @@ body.underground {
 			background-color: var(--btn-bg-color);
 		}
 	}
+
+	#top-list>li {
+		background-color: var(--top-bg-color);
+	}
 }
 
 body.minecraft {
 	--bg-color: #458c22;
 	--btn-bg-color: #1a5f10;
+	--top-bg-color: #1a5f10;
 
 	#background {
 		background-repeat: no-repeat;
@@ -108,12 +124,17 @@ body.minecraft {
 	#header {
 		position: fixed;
 		bottom: 0;
+		z-index: -1;
 
 		padding-top: 5px;
 
 		background-color: transparent;
 		background-image: url('/images/minecraft-block.jpg');
 		background-size: contain;
+
+		& * {
+			text-shadow: 0 0 20px #000;
+		}
 	}
 
 	#navigation {
@@ -121,6 +142,16 @@ body.minecraft {
 
 		button {
 			background-color: var(--btn-bg-color);
+		}
+	}
+
+	#top-list>li {
+		background-color: var(--top-bg-color);
+		background-image: url('/images/minecraft-block.jpg');
+		background-size: contain;
+
+		& * {
+			text-shadow: 0 0 20px #000;
 		}
 	}
 }
@@ -154,6 +185,10 @@ body.detective {
 		button {
 			background-color: var(--btn-bg-color);
 		}
+	}
+
+	#top-list>li {
+		background-color: var(--bg-color);
 	}
 }
 
