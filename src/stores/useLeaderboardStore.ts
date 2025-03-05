@@ -3,18 +3,19 @@ import { defineStore } from 'pinia';
 import { computed, ref, watchEffect } from 'vue';
 import { useYandexSDKStore } from './useYandexSDKStore';
 import { YANDEX_COUNT_TOP_PLAYERS, YANDEX_LEADERBOARD_NAME } from '@/constants';
-import { useUserStore } from './useUserStore';
+import { usePlayerStore } from './usePlayerStore';
 import { BACKGROUNDS } from '@/constants/backgrounds';
+import { BOOSTS } from '@/constants/boosts';
 
 export const useLeaderboardStore = defineStore('leaderboardStore', () => {
 	const yaStore = useYandexSDKStore();
-	const userStore = useUserStore();
+	const playerStore = usePlayerStore();
 
 	const entries = ref<LeaderboardEntry[] | null>(null);
 	const lb = ref<Leaderboards | null>(null);
 
 	const backgroundList = computed(() => {
-		return userStore.user.backgrounds.map((bid) => {
+		return playerStore.player.backgrounds.map((bid) => {
 			return BACKGROUNDS.find((bg) => bg.id === bid)!.class;
 		});
 	});
@@ -27,14 +28,35 @@ export const useLeaderboardStore = defineStore('leaderboardStore', () => {
 
 		if (!isOk || !lb.value) return;
 
+		// общая ценность
+		const totalBanans = () => {
+			const totalPriceBoosts = playerStore.player.boosts
+				.map((bid) => {
+					return BOOSTS.find((boost) => boost.id === bid)!;
+				})
+				.reduce((p, c) => {
+					return p + c.price;
+				}, 0);
+
+			const totalPriceBG = playerStore.player.backgrounds
+				.map((bid) => {
+					return BACKGROUNDS.find((bg) => bg.id === bid)!;
+				})
+				.reduce((p, c) => {
+					return p + c.price;
+				}, 0);
+
+			return totalPriceBoosts + totalPriceBG + playerStore.player.bananas;
+		};
+
 		const extraData = JSON.stringify({
-			boosts: userStore.user.boosts.length,
+			boosts: playerStore.player.boosts.length,
 			backgrounds: backgroundList.value.join(', '),
 		});
 
 		await lb.value.setLeaderboardScore(
 			YANDEX_LEADERBOARD_NAME,
-			userStore.user.bananas,
+			totalBanans(),
 			extraData
 		);
 		console.log('[savePlayerInLeaderboard] saved!');
@@ -56,7 +78,7 @@ export const useLeaderboardStore = defineStore('leaderboardStore', () => {
 			result.entries.map(async (ent) => {
 				if (!ent.extraData) {
 					const extraDataJson = {
-						boosts: userStore.user.boosts.length,
+						boosts: playerStore.player.boosts.length,
 						backgrounds: backgroundList.value.join(', '),
 					};
 					return { ...ent, extraData: extraDataJson };

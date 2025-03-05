@@ -1,4 +1,4 @@
-interface IUserStore {
+export interface PlayerStore {
 	id: string | null;
 	username: string;
 	priceOneClick: number;
@@ -8,7 +8,7 @@ interface IUserStore {
 	currentBackgroundId: number;
 }
 
-interface IBoostStore {
+export interface IBoostStore {
 	id: number;
 	price: number;
 	label: string;

@@ -24,11 +24,11 @@
 						<button
 							v-if="payed(background.id)"
 							class="px-4 py-1 rounded text-white bg-blue-400 mt-2 disabled:bg-slate-700"
-							:disabled="user.currentBackgroundId === background.id"
+							:disabled="playerStore.player.currentBackgroundId === background.id"
 							@click="setBackground(background.id)"
 						>
 							{{
-								user.currentBackgroundId === background.id
+								playerStore.player.currentBackgroundId === background.id
 									? 'текущий'
 									: 'применить'
 							}}
@@ -55,11 +55,10 @@ import useConfetti from '@/composable/useConfetti';
 import usePayBackground from '@/composable/usePayBackground';
 import { BACKGROUNDS } from '@/constants/backgrounds';
 import useAdvStore from '@/stores/useAdvStore';
-import { useUserStore } from '@/stores/useUserStore';
-import { storeToRefs } from 'pinia';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { onMounted } from 'vue';
 
-const { user } = storeToRefs(useUserStore());
+const playerStore = usePlayerStore();
 const { handlePay, notCanPayBackgroundByPrice, payed, setBackground } =
 	usePayBackground();
 const { backgroundsEffect } = useConfetti();

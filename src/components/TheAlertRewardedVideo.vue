@@ -1,8 +1,9 @@
 <template>
 	<div
 		:class="[
-			'fixed top-12 left-2 right-2 sm:right-auto sm:top-auto sm:bottom-3 sm:left-3 transition-opacity',
+			'fixed top-12 left-2 right-2 sm:right-auto sm:top-14 sm:left-3 transition-opacity',
 			isShowAlert ? 'opacity-100' : 'opacity-0',
+			playerStore.playerMobileLandscape ? 'top-14' : 'md:top-auto md:bottom-3',
 		]"
 	>
 		<div
@@ -23,11 +24,11 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { useYandexSDKStore } from '@/stores/useYandexSDKStore';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
-const userStore = useUserStore();
+const playerStore = usePlayerStore();
 const yaStore = useYandexSDKStore();
 
 const isShowAlert = ref(false);
@@ -38,7 +39,7 @@ const DEFAULT_BONUS = 1000;
 const CURRENT_BONUS = ref(DEFAULT_BONUS);
 
 const countBonus = computed(() => {
-	const poc = userStore.user.priceOneClick;
+	const poc = playerStore.player.priceOneClick;
 
 	if (poc > 2) {
 		CURRENT_BONUS.value = DEFAULT_BONUS * (poc / 2);
@@ -62,7 +63,7 @@ const handleShow = () => {
 			onRewarded: () => {
 				console.log('[onRewarded] triggered');
 
-				userStore.user.bananas += CURRENT_BONUS.value;
+				playerStore.player.bananas += CURRENT_BONUS.value;
 			},
 		},
 	});

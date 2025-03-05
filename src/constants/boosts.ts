@@ -1,3 +1,5 @@
+import { IBoostStore } from '@/types';
+
 export const BOOSTS: IBoostStore[] = [
 	{
 		id: 1,

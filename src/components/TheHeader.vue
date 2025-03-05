@@ -9,14 +9,20 @@
 					<span>🍌</span>
 					<CountUp
 						:start-val="prevBananas"
-						:end-val="storeUser.user.bananas"
+						:end-val="playerStore.player.bananas"
 						:duration="0.8"
 					/>
 				</div>
 			</div>
-			<div class="text-gray-200">
-				<div v-if="storeUser.user.username">{{ storeUser.user.username }}</div>
-				<div v-else>{{ UNKNOWN_NAME }}</div>
+			<div class="flex items-center gap-x-4">
+				<div class="text-gray-200 truncate">
+					<div v-if="playerStore.player.username">
+						{{ playerStore.player.username }}
+					</div>
+					<div v-else>{{ UNKNOWN_NAME }}</div>
+				</div>
+
+				<TheNavigationButton />
 			</div>
 		</div>
 	</header>
@@ -24,16 +30,17 @@
 
 <script setup lang="ts">
 import { UNKNOWN_NAME } from '@/constants';
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { ref, watch } from 'vue';
 import CountUp from 'vue-countup-v3';
+import TheNavigationButton from './TheNavigationButton.vue';
 
-const storeUser = useUserStore();
+const playerStore = usePlayerStore();
 
-const prevBananas = ref(storeUser.user.bananas);
+const prevBananas = ref(playerStore.player.bananas);
 
 watch(
-	() => storeUser.user.bananas,
+	() => playerStore.player.bananas,
 	(_, oldValue) => {
 		prevBananas.value = oldValue;
 	},

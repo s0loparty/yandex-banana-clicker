@@ -23,15 +23,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
 import usePreloadMedia from './composable/usePreloadMedia';
 import TheBackground from '@/components/TheBackground.vue';
+import { usePlayerStore } from './stores/usePlayerStore';
 
 const router = useRouter();
 const { preloadMedia } = usePreloadMedia();
+const ps = usePlayerStore();
 
 const isShowApp = ref(false);
 
@@ -51,7 +53,23 @@ const layoutName = computed(() => {
 });
 
 onMounted(() => {
+	const originalAudio = window.Audio;
+
+	// @ts-ignore
+	window.Audio = function () {
+		console.warn('Обычный <audio> запрещён! Используй Web Audio API!');
+		return new originalAudio();
+	};
+
 	disableContextmenu();
 	preloadMedia();
+
+	// закрытие страницы
+	window.addEventListener('beforeunload', ps.savePlayerStats);
+	window.addEventListener('resize', ps.changePlayerMobileLandscape);
+});
+
+onUnmounted(() => {
+	window.removeEventListener('resize', ps.changePlayerMobileLandscape);
 });
 </script>

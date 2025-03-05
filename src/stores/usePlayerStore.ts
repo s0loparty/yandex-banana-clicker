@@ -1,17 +1,21 @@
 import { defineStore } from 'pinia';
-import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
+import { reactive, ref, watch, watchEffect } from 'vue';
 import { UNKNOWN_NAME } from '@/constants';
 import { useYandexSDKStore } from './useYandexSDKStore';
 import { useLeaderboardStore } from './useLeaderboardStore';
 import { BACKGROUNDS } from '@/constants/backgrounds';
+import isMobileLandscape from '@/helpers/mobile-landscape';
+import { IBoostStore, PlayerStore } from '@/types';
 
-export const useUserStore = defineStore('userStore', () => {
-	const user = reactive<IUserStore>({
-		id: import.meta.env.DEV ? 'localhost' : null,
+const IS_DEV = import.meta.env.DEV;
+
+export const usePlayerStore = defineStore('playerStore', () => {
+	const player = reactive<PlayerStore>({
+		id: IS_DEV ? 'localhost' : null,
 		username: UNKNOWN_NAME,
 		boosts: [],
 		priceOneClick: 1,
-		bananas: 10000,
+		bananas: IS_DEV ? 100000 : 0,
 		backgrounds: [BACKGROUNDS[0].id],
 		currentBackgroundId: BACKGROUNDS[0].id,
 	});
@@ -20,7 +24,8 @@ export const useUserStore = defineStore('userStore', () => {
 	const saveTimeout = ref<NodeJS.Timeout | null>(null);
 
 	const soundEffects = ref(true);
-	const showNavigation = ref(true);
+	const showNavigation = ref(false);
+	const playerMobileLandscape = ref(false);
 
 	const yaStore = useYandexSDKStore();
 	const leaderboardStore = useLeaderboardStore();
@@ -36,22 +41,22 @@ export const useUserStore = defineStore('userStore', () => {
 	const saveBackground = async (backgroundId: number) => {
 		const bgItem = BACKGROUNDS.find((i) => i.id === backgroundId)!;
 
-		user.bananas = user.bananas - bgItem.price;
-		user.backgrounds.push(backgroundId);
+		player.bananas = player.bananas - bgItem.price;
+		player.backgrounds.push(backgroundId);
 
 		await savePlayerData();
 	};
 
 	const addBananasPerClick = (): void => {
-		user.bananas = user.bananas + user.priceOneClick;
+		player.bananas = player.bananas + player.priceOneClick;
 	};
 
 	async function savePlayerData(): Promise<void> {
 		try {
 			await yaStore.playerSetData(
 				{
-					boosts: [...user.boosts],
-					backgrounds: [...user.backgrounds],
+					boosts: [...player.boosts],
+					backgrounds: [...player.backgrounds],
 				},
 				true
 			);
@@ -64,9 +69,9 @@ export const useUserStore = defineStore('userStore', () => {
 	async function savePlayerStats(): Promise<void> {
 		try {
 			await yaStore.playerSetStats({
-				bananas: user.bananas,
-				priceOneClick: user.priceOneClick,
-				currentBackgroundId: user.currentBackgroundId,
+				bananas: player.bananas,
+				priceOneClick: player.priceOneClick,
+				currentBackgroundId: player.currentBackgroundId,
 			});
 			console.log('savePlayerStats - saved!');
 		} catch (error) {
@@ -75,48 +80,48 @@ export const useUserStore = defineStore('userStore', () => {
 	}
 
 	async function savePlayerBoost(boost: IBoostStore): Promise<void> {
-		user.bananas = user.bananas - boost.price;
-		user.priceOneClick = boost.bananas + 1; // добавляем один банан по умолчанию
-		user.boosts.push(boost.id);
+		player.bananas = player.bananas - boost.price;
+		player.priceOneClick = boost.bananas + 1; // добавляем один банан по умолчанию
+		player.boosts.push(boost.id);
 
 		await savePlayerData();
 	}
 
-	const loadUserData = async () => {
+	const loadPlayerData = async () => {
 		if (!yaStore.isReady) return;
 
-		const player = await yaStore.initPlayer();
+		const _player = await yaStore.initPlayer();
 
-		if (!player) return;
+		if (!_player) return;
 
 		// USER
-		user.id = player.getUniqueID();
-		user.username = player.getName() ?? UNKNOWN_NAME;
+		player.id = _player.getUniqueID();
+		player.username = _player.getName() ?? UNKNOWN_NAME;
 
 		// BANANAS
 		const arrStatKeys = ['bananas', 'priceOneClick', 'currentBackgroundId'];
-		const playerGameStats = await player.getStats(arrStatKeys);
+		const playerGameStats = await _player.getStats(arrStatKeys);
 		console.log('playerGameStats', playerGameStats);
 
 		Object.entries(playerGameStats).forEach(([key, value]) => {
-			if (key in user) {
+			if (key in player) {
 				// @ts-expect-error Тип "number" не может быть назначен для типа "never".ts(2322)
-				user[key as keyof typeof user] = value;
+				player[key as keyof typeof player] = value;
 			}
 		});
 
 		// BOOSTS
-		const playerGameData = await player.getData(['boosts', 'backgrounds']);
+		const playerGameData = await _player.getData(['boosts', 'backgrounds']);
 		console.log('playerGameData', playerGameData);
 
 		if (playerGameData?.boosts) {
-			user.boosts = playerGameData.boosts;
+			player.boosts = playerGameData.boosts;
 			console.log('playerGameData boosts', playerGameData.boosts);
 		}
 
 		// BACKGROUNDS
 		if (playerGameData?.backgrounds) {
-			user.backgrounds = playerGameData.backgrounds;
+			player.backgrounds = playerGameData.backgrounds;
 			console.log('playerGameData backgrounds', playerGameData.backgrounds);
 		}
 
@@ -126,14 +131,14 @@ export const useUserStore = defineStore('userStore', () => {
 
 	async function saveInDatabases() {
 		// Если ничего не изменилось, не сохраняем
-		if (user.bananas === lastSavedBananaCount.value) return;
+		if (player.bananas === lastSavedBananaCount.value) return;
 
 		try {
 			savePlayerStats();
 			leaderboardStore.savePlayerInLeaderboard();
 
 			// Обновляем последнее сохранённое значение
-			lastSavedBananaCount.value = user.bananas;
+			lastSavedBananaCount.value = player.bananas;
 		} catch (error) {
 			console.error('[saveInDatabases] Ошибка сохранения бананов:', error);
 		}
@@ -149,21 +154,25 @@ export const useUserStore = defineStore('userStore', () => {
 		saveTimeout.value = setTimeout(saveInDatabases, 2000);
 	}
 
-	// проблема: при loadUserData сохранение тоже срабатывает
-	watch(() => user.bananas, watcherUpdateBananas);
+	const changePlayerMobileLandscape = () => {
+		if (isMobileLandscape()) {
+			playerMobileLandscape.value = true;
+		} else {
+			playerMobileLandscape.value = false;
+		}
+	};
+
+	// проблема: при loadPlayerData сохранение тоже срабатывает
+	watch(() => player.bananas, watcherUpdateBananas);
 
 	// проверяем загрузился ли Yandex SDK
-	watchEffect(loadUserData);
-
-	// закрытие страницы
-	onMounted(() => {
-		window.addEventListener('beforeunload', savePlayerStats);
-	});
+	watchEffect(loadPlayerData);
 
 	return {
-		user,
+		player,
 		soundEffects,
 		showNavigation,
+		playerMobileLandscape,
 
 		toggleNavigation,
 		addBananasPerClick,
@@ -171,5 +180,7 @@ export const useUserStore = defineStore('userStore', () => {
 		savePlayerBoost,
 		savePlayerStats,
 		saveBackground,
+
+		changePlayerMobileLandscape,
 	};
 });

@@ -1,78 +1,67 @@
 <template>
 	<div
 		ref="gameArea"
-		class="relative grow overflow-hidde overflow-hidden bg-cover bg-no-repeat bg-center"
+		:class="[
+			'relative grow overflow-hidde overflow-hidden bg-cover bg-no-repeat bg-center',
+			{ 'cursor-e-resize': isLive },
+		]"
 		:style="{ backgroundImage: `url(${CatchBananasBg})` }"
 		@mousemove="handleMouseMove"
 	>
-		<!-- start  popup -->
-		<div
-			v-show="isShowStartPopup"
-			class="absolute inset-0 w-full h-full bg-black/80 z-50"
-		>
-			<div
-				class="absolute space-y-5 left-1/2 -translate-x-1/2 top-1/4 w-[80%] sm:w-[60%] p-4 sm:p-6 rounded-xl bg-slate-700 shadow-black/80 shadow-[0_0_5px]"
-			>
-				<div>
-					<div class="uppercase text-center text-white font-bold text-xl">
-						{{ TIMER_FOR_GAME_IN_SECONDS }} секунд на ловлю бананов
-					</div>
-					<p class="text-base text-center text-gray-300">
-						Двигай мартышку влево/вправо и хватай бананы!
-					</p>
+		<!-- start popup -->
+		<CatchPopup v-show="isShowStartPopup">
+			<div>
+				<div class="uppercase text-center text-white font-bold text-lg md:text-xl">
+					{{ TIMER_FOR_GAME_IN_SECONDS }} секунд на ловлю бананов
 				</div>
-
-				<p class="text-base text-center text-orange-400">
-					Из-за пропуска бананов счёт может уйти в минус! <br />
-					Будьте быстры как ветер!
+				<p class="text-sm md:text-base text-center text-gray-300">
+					Двигай мартышку влево/вправо и хватай бананы!
 				</p>
-
-				<div>
-					<div class="text-green-600 text-center text-lg">
-						Поймал банан +{{ INCREMENT_FOR_ONE_BANANA }} 🍌
-					</div>
-					<div class="text-red-600 text-center text-lg">
-						Пропустил банан -{{ DECREMENT_FOR_ONE_BANANA }} 🍌
-					</div>
-				</div>
-
-				<button
-					class="bg-yellow-600 text-white rounded-md px-4 py-2 block mx-auto"
-					@click="startGame"
-				>
-					ПОГНАЛИ
-				</button>
 			</div>
-		</div>
+
+			<p class="text-sm md:text-base text-center text-orange-400">
+				Из-за пропуска бананов счёт может уйти в минус! <br />
+				Будьте быстры как ветер!
+			</p>
+
+			<div>
+				<div class="text-green-600 text-center">
+					Поймал банан +{{ INCREMENT_FOR_ONE_BANANA }} 🍌
+				</div>
+				<div class="text-red-600 text-center">
+					Пропустил банан -{{ DECREMENT_FOR_ONE_BANANA }} 🍌
+				</div>
+			</div>
+
+			<button
+				class="bg-green-600 text-white rounded px-3 py-1 block mx-auto"
+				@click="startGame"
+			>
+				ПОГНАЛИ!
+			</button>
+		</CatchPopup>
 
 		<!-- finish popup -->
-		<div
-			v-show="isShowFinishPopup"
-			class="absolute inset-0 w-full h-full bg-black/80 z-50"
-		>
-			<div
-				class="absolute space-y-5 left-1/2 -translate-x-1/2 top-1/4 w-[80%] sm:w-1/2 p-4 sm:p-6 rounded-xl bg-slate-700 shadow-black/80 shadow-[0_0_5px]"
-			>
-				<div class="uppercase text-white text-xl font-bold text-center">
-					Конец игры
-				</div>
-				<div class="text-lg text-center">
-					<div class="text-green-600">Мартышка поймала {{ caughtBananas }} 🍌</div>
-					<div class="text-yellow-500">За это вы получаете {{ score }} 🍌</div>
-				</div>
-				<button
-					class="bg-yellow-600 text-white rounded-md px-4 py-2 block mx-auto"
-					@click="handleFinishGame"
-				>
-					СУПЕР
-				</button>
+		<CatchPopup v-show="isShowFinishPopup">
+			<div class="uppercase text-center text-white font-bold text-lg md:text-xl">
+				Конец игры
 			</div>
-		</div>
+			<div class="text-lg text-center">
+				<div class="text-green-600">Мартышка поймала {{ caughtBananas }} 🍌</div>
+				<div class="text-yellow-500">За это вы получаете {{ score }} 🍌</div>
+			</div>
+			<button
+				class="bg-yellow-500 text-white rounded-md px-4 py-2 block mx-auto"
+				@click="handleFinishGame"
+			>
+				{{ score > 0 ? 'СУПЕР' : 'ПОКИНУТЬ ИГРУ' }}
+			</button>
+		</CatchPopup>
 
 		<!-- game timer -->
 		<div
 			v-show="!isShowStartPopup"
-			class="absolute top-[5%] left-1/2 -translate-x-1/2 text-[70px] text-yellow-500/80 shadow-md font-extrabold"
+			class="absolute top-16 left-1/2 -translate-x-1/2 text-[70px] text-yellow-500/80 shadow-md font-extrabold"
 		>
 			{{ timerGameInSeconds }}
 		</div>
@@ -95,30 +84,18 @@
 		<div
 			v-for="banana in bananas"
 			:key="banana.id"
-			class="absolute w-10 h-10"
+			:class="[`absolute w-10 h-10 bg-contain bg-no-repeat bg-center`]"
 			:style="{
+				backgroundImage: `url(${SmallBanana})`,
 				top: banana.y + 'px',
 				left: banana.x + 'px',
 			}"
-		>
-			<!-- Можно вставить картинку банана -->
-			<img
-				:src="SmallBanana"
-				alt="banana"
-				class="w-full h-full object-contain"
-			/>
-			<div
-				:class="[
-					`pointer-events-none w-full h-full object-contain bg-[url(${SmallBanana})]`,
-				]"
-				draggable="false"
-			></div>
-		</div>
+		></div>
 
 		<!-- Панель управления/результаты -->
 		<div class="absolute top-0 left-0 m-2 p-2 bg-white shadow rounded">
-			<p>Счёт: {{ score }}</p>
-			<p>Поймано бананов: {{ caughtBananas }}</p>
+			<p>Итог {{ score }} 🍌</p>
+			<p>Поймано {{ caughtBananas }} 🍌</p>
 		</div>
 	</div>
 </template>
@@ -134,11 +111,12 @@ import {
 } from 'vue';
 import SmallBanana from '@/assets/images/small-banana.png';
 import Monkey from '@/assets/images/monkey.webp';
-import SoundNyam from '@/assets/sounds/nyam.mp3';
 import CatchBananasBg from '@/assets/images/catch-bananas.webp';
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { useRouter } from 'vue-router';
 import { useYandexSDKStore } from '@/stores/useYandexSDKStore';
+import CatchPopup from '@/components/catch/CatchPopup.vue';
+import useSoundEffects from '@/composable/useSoundEffects';
 
 interface Banana {
 	id: number;
@@ -148,8 +126,10 @@ interface Banana {
 }
 
 const router = useRouter();
-const userStore = useUserStore();
+const playerStore = usePlayerStore();
 const yaStore = useYandexSDKStore();
+const { playNyam } = useSoundEffects();
+
 const gameArea = useTemplateRef('gameArea');
 
 // сколько добавлять бананов за 1 пойманный банан
@@ -246,15 +226,9 @@ function checkCollisions() {
 			// Удаляем его из массива
 			bananas.value = bananas.value.filter((b) => b.id !== banana.id);
 
-			playNyamSound();
+			playNyam();
 		}
 	});
-}
-
-function playNyamSound() {
-	if (userStore.soundEffects) {
-		new Audio(SoundNyam).play();
-	}
 }
 
 // Случайная генерация бананов (например, каждые ~ 1-2 секунды)
@@ -317,6 +291,17 @@ function handleMouseMove(e: MouseEvent) {
 	);
 }
 
+// Управление корзинкой (тач)
+function handleTouchMove(e: TouchEvent) {
+	if (!gameArea.value || isShowStartPopup.value || isShowFinishPopup.value) return;
+	const rect = gameArea.value.getBoundingClientRect();
+	const touchX = e.touches[0].clientX - rect.left;
+	playerX.value = Math.max(
+		Math.min(touchX, gameWidth.value - playerWidth / 2),
+		playerWidth / 2
+	);
+}
+
 // Управление корзинкой (клавиши)
 function handleKeyDown(e: KeyboardEvent) {
 	const step = 15;
@@ -328,7 +313,7 @@ function handleKeyDown(e: KeyboardEvent) {
 }
 
 const saveBanans = () => {
-	userStore.user.bananas += score.value;
+	playerStore.player.bananas += score.value;
 };
 
 const handleFinishGame = () => {
@@ -344,8 +329,14 @@ watchEffect(() => {
 	}
 });
 
+// const prevent = (e: Event) => e.preventDefault();
+
 onMounted(() => {
 	document.addEventListener('keydown', handleKeyDown);
+
+	// MOBILE
+	gameArea.value?.addEventListener('touchmove', handleTouchMove);
+	// document.addEventListener('touchmove', prevent, { passive: false });
 });
 
 onBeforeUnmount(() => {
@@ -353,5 +344,9 @@ onBeforeUnmount(() => {
 
 	document.removeEventListener('keydown', handleKeyDown);
 	cancelAnimationFrame(animationFrameId.value);
+
+	// MOBILE
+	gameArea.value?.removeEventListener('touchmove', handleTouchMove);
+	// document.removeEventListener('touchmove', prevent);
 });
 </script>

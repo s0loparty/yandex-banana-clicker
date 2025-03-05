@@ -1,28 +1,29 @@
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import useSoundEffects from '@/composable/useSoundEffects';
 import { computed } from 'vue';
 import { BOOSTS } from '@/constants/boosts';
+import { IBoostStore } from '@/types';
 
 const usePayBoost = () => {
-	const storeUser = useUserStore();
+	const playerStore = usePlayerStore();
 
 	const { playPayBoost } = useSoundEffects();
 
 	const isBoostPayed = (boost: IBoostStore): boolean => {
-		return !!storeUser.user.boosts.find((id) => id === boost.id);
+		return !!playerStore.player.boosts.find((id) => id === boost.id);
 	};
 
 	const canBuyBoost = computed(() => {
 		return !!BOOSTS.find((boost) => {
-			return storeUser.user.bananas >= boost.price && !isBoostPayed(boost);
+			return playerStore.player.bananas >= boost.price && !isBoostPayed(boost);
 		});
 	});
 
 	const handlePay = async (boost: IBoostStore) => {
 		playPayBoost();
 
-		await storeUser.savePlayerBoost(boost);
-		await storeUser.savePlayerStats();
+		await playerStore.savePlayerBoost(boost);
+		await playerStore.savePlayerStats();
 	};
 
 	return {

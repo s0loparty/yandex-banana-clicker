@@ -1,5 +1,5 @@
 import { FIREBASE_DB_PATH } from '@/constants';
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { useYandexSDKStore } from '@/stores/useYandexSDKStore';
 import { Player } from '@/types/firebase';
 import {
@@ -14,19 +14,19 @@ import {
 
 const useFirebase = () => {
 	const database = getDatabase();
-	const userStore = useUserStore();
+	const playerStore = usePlayerStore();
 	const yaStore = useYandexSDKStore();
 
 	// Функция сохранения результата игрока
 	async function savePlayerScore(): Promise<void> {
-		if (!userStore.user.id) return;
+		if (!playerStore.player.id) return;
 
 		// если игрок не авторизован - не сохраняем его в бд
 		if (!yaStore.isPlayerAuthoreized) return;
 
-		const uid: string = userStore.user.id;
-		const username = userStore.user.username;
-		const score = userStore.user.bananas;
+		const uid: string = playerStore.player.id;
+		const username = playerStore.player.username;
+		const score = playerStore.player.bananas;
 
 		const playerRef = ref(database, `${FIREBASE_DB_PATH}/${uid}`);
 

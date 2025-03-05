@@ -8,10 +8,10 @@
 
 <script setup lang="ts">
 import { BACKGROUNDS } from '@/constants/backgrounds';
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { onMounted, useTemplateRef, watch } from 'vue';
 
-const userStore = useUserStore();
+const playerStore = usePlayerStore();
 
 const backgroundRef = useTemplateRef('backgroundRef');
 
@@ -33,7 +33,7 @@ const changeBackgroundById = (id: number) => {
 	});
 };
 
-watch(() => userStore.user.currentBackgroundId, changeBackgroundById);
+watch(() => playerStore.player.currentBackgroundId, changeBackgroundById);
 
 onMounted(() => {
 	changeBackgroundById(1);

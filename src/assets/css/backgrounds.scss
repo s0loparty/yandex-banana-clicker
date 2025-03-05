@@ -111,7 +111,7 @@ body.underground {
 }
 
 body.minecraft {
-	--bg-color: #458c22;
+	--bg-color: rgba(69, 140, 34, 0.9);
 	--btn-bg-color: #1a5f10;
 	--top-bg-color: #1a5f10;
 
@@ -122,11 +122,8 @@ body.minecraft {
 	}
 
 	#header {
-		position: fixed;
-		bottom: 0;
-		z-index: -1;
-
-		padding-top: 5px;
+		order: 1;
+		padding-top: 10px;
 
 		background-color: transparent;
 		background-image: url('/images/minecraft-block.jpg');

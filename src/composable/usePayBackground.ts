@@ -1,20 +1,20 @@
 import { computed } from 'vue';
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import useSoundEffects from './useSoundEffects';
 import { BACKGROUNDS } from '@/constants/backgrounds';
 
 const usePayBackground = () => {
-	const userStore = useUserStore();
+	const playerStore = usePlayerStore();
 	const { playPayBackground } = useSoundEffects();
 
 	const isBackgroundPayed = (backgroundId: number): boolean => {
-		return !!userStore.user.backgrounds.find((id) => id === backgroundId);
+		return !!playerStore.player.backgrounds.find((id) => id === backgroundId);
 	};
 
 	const canBuyBackground = computed(() => {
 		return !!BACKGROUNDS.find((background) => {
 			return (
-				userStore.user.bananas >= background.price &&
+				playerStore.player.bananas >= background.price &&
 				!isBackgroundPayed(background.id)
 			);
 		});
@@ -22,24 +22,28 @@ const usePayBackground = () => {
 
 	const notCanPayBackgroundByPrice = computed(() => {
 		return (price: number) => {
-			return userStore.user.bananas < price;
+			return playerStore.player.bananas < price;
 		};
 	});
 
 	const payed = computed(() => {
 		return (id: number) => {
-			return userStore.user.backgrounds.includes(id);
+			return playerStore.player.backgrounds.includes(id);
 		};
 	});
 
+	const currentBackground = computed<(typeof BACKGROUNDS)[0]>(() => {
+		return BACKGROUNDS.find((b) => b.id === playerStore.player.currentBackgroundId)!;
+	});
+
 	const setBackground = (id: number) => {
-		userStore.user.currentBackgroundId = id;
+		playerStore.player.currentBackgroundId = id;
 	};
 
 	const handlePay = async (backgroundID: number) => {
 		playPayBackground();
 
-		userStore.saveBackground(backgroundID);
+		playerStore.saveBackground(backgroundID);
 	};
 
 	return {
@@ -48,9 +52,9 @@ const usePayBackground = () => {
 		canBuyBackground,
 		notCanPayBackgroundByPrice,
 		payed,
+		currentBackground,
 		setBackground,
 	};
 };
 
 export default usePayBackground;
-

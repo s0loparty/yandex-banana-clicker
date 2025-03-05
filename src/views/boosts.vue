@@ -61,21 +61,22 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import usePayBoost from '@/composable/usePayBoost';
 import useConfetti from '@/composable/useConfetti';
 import useAdvStore from '@/stores/useAdvStore';
 import CirclePing from '@/components/ui/CirclePing.vue';
 import { BOOSTS } from '@/constants/boosts';
+import { IBoostStore } from '@/types';
 
-const storeUser = useUserStore();
+const playerStore = usePlayerStore();
 
 const { handlePay, isBoostPayed } = usePayBoost();
 const { bananasEffect } = useConfetti();
 
 const { showFullscreenAdv } = useAdvStore();
 
-const bananas = computed(() => storeUser.user.bananas);
+const bananas = computed(() => playerStore.player.bananas);
 
 const handlePayBoost = (boost: IBoostStore) => {
 	handlePay(boost);

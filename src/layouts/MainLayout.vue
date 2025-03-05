@@ -1,15 +1,18 @@
 <template>
-	<main class="mx-auto max-w-[800px]">
+	<main
+		:class="[
+			'mx-auto overflow-y-auto',
+			ps.playerMobileLandscape ? 'max-w-5xl' : 'max-w-[800px]',
+		]"
+	>
 		<div :class="wrapClasses">
 			<TheHeader />
 
-			<section :class="['flex grow', sectionClasses]">
+			<section :class="['w-full grow overflow-y-auto', sectionClasses]">
 				<RouterView />
 			</section>
 
 			<TheNavigation />
-
-			<TheNavigationButton />
 		</div>
 	</main>
 </template>
@@ -19,9 +22,10 @@ import TheNavigation from '@/components/TheNavigation.vue';
 import TheHeader from '@/components/TheHeader.vue';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import TheNavigationButton from '@/components/TheNavigationButton.vue';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 
 const route = useRoute();
+const ps = usePlayerStore();
 
 const wrapClasses = computed(() => {
 	return [
@@ -30,7 +34,11 @@ const wrapClasses = computed(() => {
 	];
 });
 
-const sectionClasses = computed(() =>
-	route.name === 'main' ? 'w-max items-center' : 'w-full'
-);
+const sectionClasses = computed(() => {
+	if (route.name === 'main') {
+		return 'flex items-center justify-center';
+	} else if (route.name === 'catch') {
+		return 'flex flex-col';
+	}
+});
 </script>

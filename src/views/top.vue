@@ -19,7 +19,7 @@
 					:class="itemClasses(entry.player.uniqueID)"
 				>
 					<div class="flex items-center gap-x-4">
-						<div class="text-white font-semibold">
+						<div class="md:block hidden">
 							<img
 								v-if="index < 4"
 								:src="rankIcon(index + 1)"
@@ -27,7 +27,7 @@
 							/>
 							<div
 								v-else
-								class="w-12 h-12 rounded-full bg-yellow-400 flex items-center justify-center"
+								class="w-12 h-12 rounded-full bg-yellow-400 flex items-center justify-center text-white font-semibold"
 								style="text-shadow: 0 0 5px black"
 							>
 								{{ index + 1 }}
@@ -73,12 +73,12 @@ import Top2 from '@/assets/icons/top2.png';
 import Top3 from '@/assets/icons/top3.png';
 import { computed } from 'vue';
 import PopupAuthorize from '@/components/PopupAuthorize.vue';
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import { useLeaderboardStore } from '@/stores/useLeaderboardStore';
 import { UNKNOWN_NAME } from '@/constants';
 import CountUp from 'vue-countup-v3';
 
-const userStore = useUserStore();
+const playerStore = usePlayerStore();
 const lbStore = useLeaderboardStore();
 
 const rankIcon = computed(() => {
@@ -98,7 +98,7 @@ const rankIcon = computed(() => {
 const itemClasses = computed(() => {
 	return (id: string) => {
 		return [
-			{ 'border border-yellow-400': userStore.user.id === id },
+			{ 'border border-yellow-400': playerStore.player.id === id },
 			'p-2 rounded-md border border-transparent flex items-center justify-between gap-x-4 bg-slate-600 hover:bg-slate-700',
 		];
 	};

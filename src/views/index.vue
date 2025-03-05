@@ -1,8 +1,15 @@
 <template>
-	<main
+	<div
 		ref="wrapRef"
 		id="wrap-banana"
-		class="relative grow flex items-center justify-center rounded-full w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] bg-black/15"
+		:class="[
+			'relative p-10 grow flex items-center justify-center rounded-full bg-black/15',
+			{
+				'max-w-[250px] h-[250px] sm:max-w-[280px] sm:h-[280px] md:max-w-[300px] md:h-[300px]':
+					!playerStore.playerMobileLandscape,
+			},
+		]"
+		:style="mobileLandscapeStyles"
 	>
 		<XyzTransition
 			appear
@@ -10,10 +17,10 @@
 			mode="in-out"
 		>
 			<div
-				id="banana"
 				v-if="!isExploded"
+				id="banana"
 				:class="[
-					'main-banana bg-no-repeat bg-contain bg-center mx-auto w-[200px] h-[200px] sm:w-full duration-[100ms] landscape:max-w-[300px]',
+					'main-banana bg-no-repeat bg-contain bg-center w-full h-full duration-[100ms]',
 					scaleClasses,
 				]"
 				:style="{ backgroundImage: `url(${dynamicBananaImage})` }"
@@ -54,14 +61,14 @@
 		>
 			+{{ COUNT_BANANAS_FOR_EFFECT }} 🍌
 		</div>
-	</main>
+	</div>
 
 	<TheAlertRewardedVideo />
 </template>
 
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
-import { useUserStore } from '@/stores/useUserStore';
+import { usePlayerStore } from '@/stores/usePlayerStore';
 import useSoundEffects from '@/composable/useSoundEffects';
 import imageBanana from '@/assets/images/banana.png';
 import imageBananaMinecraft from '@/assets/images/banana-minecraft.png';
@@ -72,7 +79,7 @@ import TheAlertRewardedVideo from '@/components/TheAlertRewardedVideo.vue';
 const COUNT_CLICKS_FOR_EXPLOSION_EFFECT = 100;
 const COUNT_BANANAS_FOR_EFFECT = 100;
 
-const userStore = useUserStore();
+const playerStore = usePlayerStore();
 const soundEffects = useSoundEffects();
 
 const scaleClasses = ref('');
@@ -82,6 +89,10 @@ const bananaPieces = ref<{ x: number; y: number; rotation: number }[]>([]);
 const clickCount = ref(0);
 let lastClickTime = 0;
 
+const mobileLandscapeStyles = computed(() => {
+	return playerStore.playerMobileLandscape ? { maxWidth: '220px', height: '220px' } : {};
+});
+
 const dynamicBananaImage = computed(() => {
 	const MAP = {
 		minecraft: imageBananaMinecraft,
@@ -89,7 +100,7 @@ const dynamicBananaImage = computed(() => {
 	};
 
 	const bgClass = BACKGROUNDS.find(
-		(bg) => bg.id === userStore.user.currentBackgroundId
+		(bg) => bg.id === playerStore.player.currentBackgroundId
 	)!.class;
 
 	// @ts-ignore
@@ -97,7 +108,7 @@ const dynamicBananaImage = computed(() => {
 });
 
 const bonusBananas = () => {
-	userStore.user.bananas += COUNT_BANANAS_FOR_EFFECT;
+	playerStore.player.bananas += COUNT_BANANAS_FOR_EFFECT;
 };
 
 const handleClick = (ev: any): void => {
@@ -110,7 +121,7 @@ const handleClick = (ev: any): void => {
 	lastClickTime = currentTime;
 
 	clickEffect(ev);
-	userStore.addBananasPerClick();
+	playerStore.addBananasPerClick();
 	soundEffects.playBananaClick();
 
 	if (clickCount.value >= COUNT_CLICKS_FOR_EXPLOSION_EFFECT) {
@@ -134,7 +145,7 @@ function clickEffect(e: any) {
 	bananaPlus.classList.add('banana-object');
 	bananaPlus.innerHTML = `
 		<span class="text-sm text-white drop-shadow-lg relative top-[14px] left-[10px]">
-			+${userStore.user.priceOneClick}
+			+${playerStore.player.priceOneClick}
 		</span>
 		<img src="${smallBanana}" class="w-8 drop-shadow-md" />
 	`;
