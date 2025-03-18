@@ -81,7 +81,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
 
 	async function savePlayerBoost(boost: IBoostStore): Promise<void> {
 		player.bananas = player.bananas - boost.price;
-		player.priceOneClick = boost.bananas + 1; // добавляем один банан по умолчанию
+		player.priceOneClick += boost.bananas;
 		player.boosts.push(boost.id);
 
 		await savePlayerData();
