@@ -16,7 +16,7 @@ export const useLeaderboardStore = defineStore('leaderboardStore', () => {
 
 	const backgroundList = computed(() => {
 		return playerStore.player.backgrounds.map((bid) => {
-			return BACKGROUNDS.find((bg) => bg.id === bid)!.class;
+			return BACKGROUNDS.find((bg) => bg.id === bid)!.shortname;
 		});
 	});
 
