@@ -57,6 +57,7 @@
 							:end-val="entry.score"
 							:duration="0.8"
 							:options="{ suffix: ' 🍌' }"
+							style="text-wrap-mode: nowrap"
 						/>
 					</div>
 				</li>
