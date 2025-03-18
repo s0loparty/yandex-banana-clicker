@@ -124,9 +124,6 @@ export const usePlayerStore = defineStore('playerStore', () => {
 			player.backgrounds = playerGameData.backgrounds;
 			console.log('playerGameData backgrounds', playerGameData.backgrounds);
 		}
-
-		// IS READY FOR GAME
-		yaStore.ysdk?.features.LoadingAPI.ready();
 	};
 
 	async function saveInDatabases() {

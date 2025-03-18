@@ -13,7 +13,11 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 			(window as any).YaGames.init()
 				.then((sdk: YandexGamesSDK) => {
 					ysdk.value = sdk;
+
+					// sdk.features.LoadingAPI.ready();
+
 					isReady.value = true;
+
 					console.log('Yandex SDK загружен', sdk);
 				})
 				.catch((err: unknown) => {

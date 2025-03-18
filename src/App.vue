@@ -23,43 +23,53 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
 import usePreloadMedia from './composable/usePreloadMedia';
 import TheBackground from '@/components/TheBackground.vue';
 import { usePlayerStore } from './stores/usePlayerStore';
+import { useYandexSDKStore } from './stores/useYandexSDKStore';
 
 const router = useRouter();
 const { preloadMedia } = usePreloadMedia();
 const ps = usePlayerStore();
+const yaStore = useYandexSDKStore();
 
 const isShowApp = ref(false);
 
-const checkLoading = setTimeout(loadApp, 1000);
+// const checkLoading = setTimeout(loadApp, 1000);
 
-async function loadApp() {
-	clearInterval(checkLoading);
+// async function loadApp() {
+// 	clearInterval(checkLoading);
 
-	router.push('/');
+// 	router.push('/');
 
-	isShowApp.value = true;
-}
+// 	isShowApp.value = true;
+// }
 
 const layoutName = computed(() => {
 	const layout = router.currentRoute.value.meta?.layout;
 	return layout ? `${layout}Layout` : 'MainLayout';
 });
 
-onMounted(() => {
-	const originalAudio = window.Audio;
+watchEffect(() => {
+	if (yaStore.isReady) {
+		isShowApp.value = true;
+		router.push('/');
+		yaStore.ysdk?.features.LoadingAPI.ready();
+	}
+});
 
-	// @ts-ignore
-	window.Audio = function () {
-		console.warn('Обычный <audio> запрещён! Используй Web Audio API!');
-		return new originalAudio();
-	};
+onMounted(() => {
+	// const originalAudio = window.Audio;
+
+	// // @ts-ignore
+	// window.Audio = function () {
+	// 	console.warn('Обычный <audio> запрещён! Используй Web Audio API!');
+	// 	return new originalAudio();
+	// };
 
 	disableContextmenu();
 	preloadMedia();
