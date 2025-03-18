@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
@@ -39,38 +39,26 @@ const yaStore = useYandexSDKStore();
 
 const isShowApp = ref(false);
 
-// const checkLoading = setTimeout(loadApp, 1000);
-
-// async function loadApp() {
-// 	clearInterval(checkLoading);
-
-// 	router.push('/');
-
-// 	isShowApp.value = true;
-// }
-
 const layoutName = computed(() => {
 	const layout = router.currentRoute.value.meta?.layout;
 	return layout ? `${layout}Layout` : 'MainLayout';
 });
 
-watchEffect(() => {
-	if (yaStore.isReady) {
-		isShowApp.value = true;
-		router.push('/');
-		yaStore.ysdk?.features.LoadingAPI.ready();
+watch(
+	() => yaStore.isReady,
+	(isReady) => {
+		if (isReady) {
+			isShowApp.value = true;
+			router.push('/');
+			yaStore.ysdk?.features.LoadingAPI.ready();
+		}
+	},
+	{
+		once: true,
 	}
-});
+);
 
 onMounted(() => {
-	// const originalAudio = window.Audio;
-
-	// // @ts-ignore
-	// window.Audio = function () {
-	// 	console.warn('Обычный <audio> запрещён! Используй Web Audio API!');
-	// 	return new originalAudio();
-	// };
-
 	disableContextmenu();
 	preloadMedia();
 
