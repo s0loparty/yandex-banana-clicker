@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import disableContextmenu from './helpers/disable-contextmenu';
 import bananImage from '@/assets/images/banana.png';
@@ -61,8 +61,8 @@ watch(
 onMounted(() => {
 	disableContextmenu();
 	preloadMedia();
+	ps.changePlayerMobileLandscape();
 
-	// закрытие страницы
 	window.addEventListener('beforeunload', ps.savePlayerStats);
 	window.addEventListener('resize', ps.changePlayerMobileLandscape);
 });
