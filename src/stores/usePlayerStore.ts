@@ -21,7 +21,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
 	});
 
 	const lastSavedBananaCount = ref(0);
-	const saveTimeout = ref<NodeJS.Timeout | null>(null);
+	const saveTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 
 	const soundEffects = ref(true);
 	const showNavigation = ref(false);
@@ -58,7 +58,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
 					boosts: [...player.boosts],
 					backgrounds: [...player.backgrounds],
 				},
-				true
+				true,
 			);
 			console.log('savePlayerData - saved!');
 		} catch (error) {
@@ -181,3 +181,4 @@ export const usePlayerStore = defineStore('playerStore', () => {
 		changePlayerMobileLandscape,
 	};
 });
+
