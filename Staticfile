@@ -1,0 +1,5 @@
+# root directory to serve
+root: dist
+
+# enable SPA routing: fall back to index.html for unmatched routes
+index_fallback: true
