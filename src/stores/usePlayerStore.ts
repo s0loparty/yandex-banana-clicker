@@ -15,7 +15,7 @@ export const usePlayerStore = defineStore('playerStore', () => {
 		username: UNKNOWN_NAME,
 		boosts: [],
 		priceOneClick: 1,
-		bananas: IS_DEV ? 100000 : 0,
+		bananas: IS_DEV ? 100000 : 100000,
 		backgrounds: [BACKGROUNDS[0].id],
 		currentBackgroundId: BACKGROUNDS[0].id,
 	});
