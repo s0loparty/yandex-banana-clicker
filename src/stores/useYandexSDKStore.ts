@@ -53,14 +53,18 @@ const createLocalPlayer = (): YandexPlayer => {
 		},
 		getStats: async (keys) => {
 			if (!keys) return { ...state.stats };
-			return Object.fromEntries(keys.map((key) => [key, state.stats[key]]).filter(([, value]) => value !== undefined));
+			return Object.fromEntries(
+				keys
+					.map((key) => [key, state.stats[key]])
+					.filter(([, value]) => value !== undefined)
+			);
 		},
 		getUniqueID: () => 'local-player',
 		getIDsPerGame: async () => [],
 		getName: () => 'Локальный игрок',
 		getPhoto: () => '',
 		getPayingStatus: () => 'unknown',
-		getMode: () => 'lite',
+		getMode: () => 'local',
 	};
 };
 
