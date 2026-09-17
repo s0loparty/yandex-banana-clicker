@@ -68,29 +68,30 @@ const createLocalPlayer = (): YandexPlayer => {
 	};
 };
 
+const getLocalLeaderboardDescription = async (leaderboardName: string) => ({
+	appID: 'local',
+	default: true,
+	description: {
+		invert_sort_order: false,
+		score_format: {
+			options: { decimal_offset: 0 },
+			type: 'numeric' as const,
+		},
+	},
+	name: leaderboardName,
+	title: { ru: leaderboardName },
+});
+
 const createLocalSDK = (): YandexGamesSDK => {
 	const localPlayer = createLocalPlayer();
-
 	const localLeaderboards = {
-		getLeaderboardDescription: async (leaderboardName: string) => ({
-			appID: 'local',
-			default: true,
-			description: {
-				invert_sort_order: false,
-				score_format: {
-					options: { decimal_offset: 0 },
-					type: 'numeric' as const,
-				},
-			},
-			name: leaderboardName,
-			title: { ru: leaderboardName },
-		}),
+		getLeaderboardDescription: getLocalLeaderboardDescription,
 		setLeaderboardScore: async () => undefined,
 		getLeaderboardPlayerEntry: async () => {
 			throw { code: 'NO_DATA' };
 		},
 		getLeaderboardEntries: async () => ({
-			leaderboard: await localLeaderboards.getLeaderboardDescription('local'),
+			leaderboard: await getLocalLeaderboardDescription('local'),
 			ranges: [],
 			userRank: -1,
 			entries: [],
