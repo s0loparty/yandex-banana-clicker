@@ -2,29 +2,196 @@ import { YandexGamesSDK, YandexPlayer } from '@/types/yandexSDK';
 import { computed, onMounted, ref } from 'vue';
 import { defineStore } from 'pinia';
 
+const LOCAL_STORAGE_KEY = 'banana-clicker-local-player';
+
+type LocalPlayerState = {
+	data: Record<string, any>;
+	stats: Record<string, number>;
+};
+
+const readLocalPlayerState = (): LocalPlayerState => {
+	try {
+		const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+		if (raw) return JSON.parse(raw);
+	} catch (err) {
+		console.warn('[YandexSDK] Failed to read local player state', err);
+	}
+
+	return { data: {}, stats: {} };
+};
+
+const createLocalPlayer = (): YandexPlayer => {
+	const state = readLocalPlayerState();
+
+	const persist = () => {
+		try {
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+		} catch (err) {
+			console.warn('[YandexSDK] Failed to persist local player state', err);
+		}
+	};
+
+	return {
+		setData: async (data) => {
+			Object.assign(state.data, data);
+			persist();
+		},
+		getData: async (keys) => {
+			if (!keys) return { ...state.data };
+			return Object.fromEntries(keys.map((key) => [key, state.data[key]]));
+		},
+		setStats: async (stats) => {
+			Object.assign(state.stats, stats);
+			persist();
+		},
+		incrementStats: async (increments) => {
+			Object.entries(increments).forEach(([key, value]) => {
+				state.stats[key] = (state.stats[key] ?? 0) + value;
+			});
+			persist();
+			return { ...state.stats };
+		},
+		getStats: async (keys) => {
+			if (!keys) return { ...state.stats };
+			return Object.fromEntries(keys.map((key) => [key, state.stats[key]]).filter(([, value]) => value !== undefined));
+		},
+		getUniqueID: () => 'local-player',
+		getIDsPerGame: async () => [],
+		getName: () => 'Локальный игрок',
+		getPhoto: () => '',
+		getPayingStatus: () => 'unknown',
+		getMode: () => 'lite',
+	};
+};
+
+const createLocalSDK = (): YandexGamesSDK => {
+	const localPlayer = createLocalPlayer();
+
+	const localLeaderboards = {
+		getLeaderboardDescription: async (leaderboardName: string) => ({
+			appID: 'local',
+			default: true,
+			description: {
+				invert_sort_order: false,
+				score_format: {
+					options: { decimal_offset: 0 },
+					type: 'numeric' as const,
+				},
+			},
+			name: leaderboardName,
+			title: { ru: leaderboardName },
+		}),
+		setLeaderboardScore: async () => undefined,
+		getLeaderboardPlayerEntry: async () => {
+			throw { code: 'NO_DATA' };
+		},
+		getLeaderboardEntries: async () => ({
+			leaderboard: await localLeaderboards.getLeaderboardDescription('local'),
+			ranges: [],
+			userRank: -1,
+			entries: [],
+		}),
+	};
+
+	return {
+		isAvailableMethod: async () => true,
+		environment: {
+			get app() {
+				return { id: 'local' };
+			},
+			get browser() {
+				return { lang: navigator.language };
+			},
+			get i18n() {
+				return { lang: 'ru', tld: 'ru' };
+			},
+			get payload() {
+				return null;
+			},
+		},
+		deviceInfo: {
+			get type() {
+				return 'desktop';
+			},
+			isMobile: () => false,
+			isTablet: () => false,
+			isDesktop: () => true,
+			isTV: () => false,
+		},
+		features: {
+			LoadingAPI: { ready: () => undefined },
+			GameplayAPI: {
+				start: () => undefined,
+				stop: () => undefined,
+			},
+		},
+		clipboard: { writeText: (text: string) => navigator.clipboard?.writeText(text) },
+		screen: {
+			fullscreen: {
+				STATUS_ON: 'on',
+				STATUS_OFF: 'off',
+				status: 'off',
+				request: async () => undefined,
+				exit: async () => undefined,
+			},
+		},
+		getStorage: async () => localStorage,
+		auth: { openAuthDialog: async () => undefined },
+		getPlayer: async () => localPlayer,
+		feedback: {
+			canReview: async () => ({ value: false }),
+			requestReview: async () => ({ feedbackSent: false }),
+		},
+		adv: {
+			showFullscreenAdv: (opts) => opts?.callbacks?.onClose?.(),
+			showRewardedVideo: (opts) => {
+				opts?.callbacks?.onOpen?.();
+				opts?.callbacks?.onRewarded?.();
+				opts?.callbacks?.onClose?.(true);
+			},
+			showBannerAdv: async () => ({}),
+			hideBannerAdv: () => undefined,
+			getBannerAdvStatus: async () => ({ stickyAdvIsShowing: false }),
+		},
+		EVENTS: { EXIT: 'EXIT', HISTORY_BACK: 'HISTORY_BACK' },
+		dispatchEvent: async () => undefined,
+		onEvent: () => () => undefined,
+		shortcut: {
+			canShowPrompt: async () => ({ canShow: false }),
+			showPrompt: async () => ({ outcome: 'rejected' as const }),
+		},
+		getPayments: async () => {
+			throw new Error('Payments are unavailable in local mode');
+		},
+		getLeaderboards: async () => localLeaderboards,
+	} as YandexGamesSDK;
+};
+
 export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 	const ysdk = ref<YandexGamesSDK | null>(null);
 	const player = ref<YandexPlayer | null>(null);
 	const isReady = ref(false);
 
-	// Инициализация SDK при монтировании компонента.
+	// В локальной разработке SDK Яндекс Игр может отсутствовать.
+	// В этом случае запускаем совместимый локальный mock, чтобы игра была
+	// полностью доступна через обычный `npm run dev`.
 	onMounted(() => {
 		if (typeof window !== 'undefined' && (window as any).YaGames) {
 			(window as any).YaGames.init()
 				.then((sdk: YandexGamesSDK) => {
 					ysdk.value = sdk;
-
-					// sdk.features.LoadingAPI.ready();
-
 					isReady.value = true;
-
 					console.log('Yandex SDK загружен', sdk);
 				})
 				.catch((err: unknown) => {
-					console.error('Ошибка загрузки SDK', err);
+					console.error('Ошибка загрузки SDK, включаем локальный режим', err);
+					ysdk.value = createLocalSDK();
+					isReady.value = true;
 				});
 		} else {
-			console.warn('YaGames не найден в window. Возможно, скрипт не подключен.');
+			console.info('Yandex SDK не найден — включён локальный режим разработки.');
+			ysdk.value = createLocalSDK();
+			isReady.value = true;
 		}
 	});
 
@@ -32,10 +199,6 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		return player.value?.getMode() !== 'lite';
 	});
 
-	/**
-	 * Инициализация объекта игрока.
-	 * Запрашивает игрока с запрашиваемыми данными (scopes: true).
-	 */
 	const initPlayer = async (): Promise<YandexPlayer | null> => {
 		if (isReady.value && ysdk.value) {
 			try {
@@ -50,11 +213,6 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		return null;
 	};
 
-	/**
-	 * Сохраняет внутриигровые данные игрока.
-	 * @param data Объект с данными.
-	 * @param flush Если true — данные отправляются сразу.
-	 */
 	const playerSetData = async (
 		data: Record<string, any>,
 		flush: boolean = false
@@ -70,10 +228,6 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		}
 	};
 
-	/**
-	 * Получает внутриигровые данные игрока.
-	 * @param keys Массив ключей или undefined для получения всех данных.
-	 */
 	const playerGetData = async (keys?: string[]): Promise<Record<string, any> | null> => {
 		if (player.value) {
 			try {
@@ -86,10 +240,6 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		return null;
 	};
 
-	/**
-	 * Сохраняет числовую статистику игрока.
-	 * @param stats Объект с числовыми значениями.
-	 */
 	const playerSetStats = async (stats: Record<string, number>): Promise<void> => {
 		if (player.value) {
 			try {
@@ -102,10 +252,6 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		}
 	};
 
-	/**
-	 * Инкрементирует числовые данные игрока.
-	 * @param increments Объект с инкрементами.
-	 */
 	const playerIncrementStats = async (
 		increments: Record<string, number>
 	): Promise<Record<string, number> | undefined> => {
@@ -121,10 +267,6 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		}
 	};
 
-	/**
-	 * Получает числовую статистику игрока.
-	 * @param keys Массив ключей или undefined для получения всех данных.
-	 */
 	const playerGetStats = async (
 		keys?: string[]
 	): Promise<Record<string, number> | null> => {
@@ -145,7 +287,7 @@ export const useYandexSDKStore = defineStore('yandexSDKStore', () => {
 		try {
 			if (player.value.getMode() === 'lite') {
 				await ysdk.value.auth.openAuthDialog();
-				player.value = await ysdk.value.getPlayer({ scopes: true }); // Повторная инициализация
+				player.value = await ysdk.value.getPlayer({ scopes: true });
 			}
 			console.log('Пользователь авторизован:', player.value);
 			cbSuccess();
