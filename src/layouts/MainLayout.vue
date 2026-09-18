@@ -30,7 +30,7 @@ const ps = usePlayerStore();
 const wrapClasses = computed(() => {
 	return [
 		{ 'bg-black/40': route.name !== 'main' },
-		'min-h-screen max-h-screen flex flex-col items-center transition-colors',
+		'min-h-dvh max-h-dvh flex flex-col items-center transition-colors',
 	];
 });
 
